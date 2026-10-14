@@ -1,0 +1,38 @@
+[
+  {
+    "id": "paleozoic",
+    "name": "고생대 바다",
+    "period": "캄브리아기~오르도비스기",
+    "age_ma": 480,
+    "range_ma": [500, 450],
+    "description": "지금의 강원 남부·충북(태백·영월·단양)이 적도 가까운 따뜻하고 얕은 바다였던 시대",
+    "highlight": "강원도 산골이 원래 따뜻한 바다였어요.",
+    "has_sea_level_slider": false,
+    "view": { "paleo": { "center": [80, -8], "zoom": 2.6 }, "modern": { "center": [128.2, 36.5], "zoom": 5.2 } },
+    "status": "preview"
+  },
+  {
+    "id": "cretaceous",
+    "name": "백악기 — 공룡 시대",
+    "period": "백악기 전기~후기",
+    "age_ma": 100,
+    "range_ma": [145, 66],
+    "description": "경상도 일대에 거대한 호수 분지(경상분지)가 펼쳐져 공룡이 물가를 걷던 시대",
+    "highlight": "공룡이 걷던 호숫가 바로 옆 바다엔 수장룡이 헤엄쳤어요.",
+    "has_sea_level_slider": false,
+    "view": { "paleo": { "center": [137, 43], "zoom": 3.3 }, "modern": { "center": [129, 36.5], "zoom": 4.8 } },
+    "status": "full"
+  },
+  {
+    "id": "ice_age",
+    "name": "신생대 빙하기",
+    "period": "최종빙기 최성기",
+    "age_ma": 0.02,
+    "range_ma": [0.026, 0.019],
+    "description": "해수면이 지금보다 약 120m 낮아 서해 전체가 육지였던 시대",
+    "highlight": "서해는 바다가 아니라 넓은 평원이었어요.",
+    "has_sea_level_slider": true,
+    "view": { "paleo": { "center": [125, 35.5], "zoom": 4.4 }, "modern": { "center": [127.5, 36], "zoom": 5 } },
+    "status": "preview"
+  }
+]

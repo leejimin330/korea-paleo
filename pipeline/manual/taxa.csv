@@ -1,0 +1,47 @@
+id,parent,name,name_ko,kind,time_ma,extinct_ma,uncertain,note
+animalia,,Animalia,동물,clade,600,,0,
+arthropoda,animalia,Arthropoda,절지동물,clade,540,,0,
+trilobita,arthropoda,Trilobita,삼엽충,clade,521,252,0,
+malacostraca,arthropoda,Malacostraca,연갑류(게·새우),clade,500,,0,
+portunus-trituberculatus,malacostraca,Portunus trituberculatus,꽃게,modern,0,,0,
+brachiopoda,animalia,Brachiopoda,완족동물,clade,535,,0,
+lingula-anatina,brachiopoda,Lingula anatina,개맛,modern,0,,0,껍데기 모양이 고생대 이후 크게 변하지 않은 완족동물
+vertebrata,animalia,Vertebrata,척추동물,clade,520,,0,
+conodonta,vertebrata,Conodonta,코노돈트,clade,500,200,1,척추동물 안에서의 위치는 학계 논쟁 중
+actinopterygii,vertebrata,Actinopterygii,조기어류,clade,420,,0,
+teleostei,actinopterygii,Teleostei,진골어류,clade,250,,0,
+carassius-auratus,teleostei,Carassius auratus,붕어,modern,0,,0,
+tetrapoda,vertebrata,Tetrapoda,사지동물,clade,375,,0,
+synapsida,tetrapoda,Synapsida,단궁류,clade,320,,0,
+mammalia,synapsida,Mammalia,포유류,clade,180,,0,
+artiodactyla,mammalia,Artiodactyla,우제류(고래 포함),clade,60,,0,
+cervidae,artiodactyla,Cervidae,사슴과,clade,25,,0,
+hydropotes-inermis,cervidae,Hydropotes inermis,고라니,modern,0,,0,
+cetacea,artiodactyla,Cetacea,고래류,clade,50,,0,육지 포유류가 다시 바다로 돌아간 계통
+neophocaena-asiaeorientalis,cetacea,Neophocaena asiaeorientalis,상괭이,modern,0,,0,
+carnivora,mammalia,Carnivora,식육목,clade,50,,0,
+ursidae,carnivora,Ursidae,곰과,clade,35,,0,
+ursus-thibetanus,ursidae,Ursus thibetanus,반달가슴곰,modern,0,,0,
+sauropsida,tetrapoda,Sauropsida,파충류(조류 포함),clade,320,,0,
+testudines,sauropsida,Testudines,거북,clade,230,,0,
+mauremys-reevesii,testudines,Mauremys reevesii,남생이,modern,0,,0,
+squamata,sauropsida,Squamata,유린목(도마뱀·뱀),clade,200,,0,
+takydromus-amurensis,squamata,Takydromus amurensis,아무르장지뱀,modern,0,,0,
+mosasauridae,squamata,Mosasauridae,모사사우루스류,clade,98,66,1,도마뱀·뱀과의 정확한 관계는 논쟁 중 (공룡 아님)
+sauropterygia,sauropsida,Sauropterygia,기룡류,clade,245,66,1,파충류 안에서의 위치는 논쟁 중
+plesiosauria,sauropterygia,Plesiosauria,수장룡,clade,203,66,0,공룡 아님
+archosauria,sauropsida,Archosauria,지배파충류,clade,250,,0,
+pterosauria,archosauria,Pterosauria,익룡,clade,228,66,0,공룡 아님 — 공룡과 가까운 친척
+dinosauria,archosauria,Dinosauria,공룡,clade,235,,0,
+ornithischia,dinosauria,Ornithischia,조반류,clade,200,66,0,
+ornithopoda,ornithischia,Ornithopoda,조각류,clade,170,66,0,
+ceratopsia,ornithischia,Ceratopsia,각룡류,clade,160,66,0,
+saurischia,dinosauria,Saurischia,용반류,clade,231,,0,
+sauropoda,saurischia,Sauropoda,용각류,clade,200,66,0,
+theropoda,saurischia,Theropoda,수각류,clade,231,,0,
+dromaeosauridae,theropoda,Dromaeosauridae,드로마에오사우루스류,clade,167,66,0,
+aves,theropoda,Aves,조류,clade,150,,0,새는 수각류 공룡에서 갈라져 나온 계통
+neornithes,aves,Neornithes,현생 조류,clade,100,,1,현생 조류 기원 시점은 연구마다 차이가 큼
+pica-serica,neornithes,Pica serica,까치,modern,0,,0,
+grus-japonensis,neornithes,Grus japonensis,두루미,modern,0,,0,
+anas-platyrhynchos,neornithes,Anas platyrhynchos,청둥오리,modern,0,,0,
