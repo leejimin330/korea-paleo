@@ -20,7 +20,7 @@
     "description": "경상도 일대에 거대한 호수 분지(경상분지)가 펼쳐져 공룡이 물가를 걷던 시대",
     "highlight": "공룡이 걷던 호숫가 바로 옆 바다엔 수장룡이 헤엄쳤어요.",
     "has_sea_level_slider": false,
-    "view": { "paleo": { "center": [137, 43], "zoom": 3.3 }, "modern": { "center": [129, 36.5], "zoom": 4.8 } },
+    "view": { "paleo": { "center": [141.5, 43.5], "zoom": 4.1 }, "modern": { "center": [129, 36.5], "zoom": 4.8 } },
     "status": "full"
   },
   {
