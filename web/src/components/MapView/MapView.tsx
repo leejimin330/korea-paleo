@@ -60,6 +60,7 @@ export function MapView() {
   const seaLevel = useAppStore((s) => s.seaLevel);
   const setSeaLevel = useAppStore((s) => s.setSeaLevel);
   const [bathy, setBathy] = useState<BathyGrid | null>(null);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const selectFossil = useAppStore((s) => s.selectFossil);
 
   const era = data?.eras.find((e) => e.id === eraId);
@@ -334,7 +335,18 @@ export function MapView() {
           </div>
         )}
 
-        <div className="map-filters" role="group" aria-label="마커 필터">
+        {/* 좁은 화면에서는 필터를 접어 두고 버튼으로 펼친다 (CSS에서 넓은 화면은 항상 펼침). */}
+        <button
+          type="button"
+          className="filters-toggle"
+          aria-expanded={filtersOpen}
+          aria-controls="map-filters"
+          onClick={() => setFiltersOpen(!filtersOpen)}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" /></svg>
+          필터{filter.groups.length > 0 || !filter.showReference || showPbdb ? " · 적용 중" : ""}
+        </button>
+        <div id="map-filters" className={`map-filters${filtersOpen ? " open" : ""}`} role="group" aria-label="마커 필터">
           {groupsHere.map((g) => (
             <button key={g} type="button" aria-pressed={groupOn(g)} className={groupOn(g) ? "" : "off"} onClick={() => toggleGroup(g)}>
               <span className="dot" style={{ background: GROUPS[g]?.color }} aria-hidden="true" />

@@ -49,6 +49,7 @@ a:hover { color: var(--amber-dark); }
 .chips button { height: 32px; padding: 0 12px; border-radius: 16px; font-size: 13px; background: transparent; border: 1px solid var(--line-strong); }
 .chips button:hover { border-color: var(--amber); }
 .chips button.on { background: var(--glow); border-color: #cda56d; font-weight: 600; }
+.chips button.more { border-style: dashed; color: var(--amber); font-family: var(--mono); font-size: 12px; }
 
 /* ── 지층 타임라인 ── */
 .strata { display: flex; flex-direction: column; }
@@ -95,6 +96,7 @@ a:hover { color: var(--amber-dark); }
 .map-filters button { pointer-events: auto; height: 30px; display: flex; align-items: center; gap: 7px; padding: 0 11px; border-radius: 15px; font-size: 12px; background: rgba(255, 246, 230, 0.92); border: 1px solid var(--line-strong); }
 .map-filters button.off { color: var(--faint); border: 1px dashed var(--line); text-decoration: line-through; }
 .map-filters button.off .dot { opacity: 0.35; }
+.filters-toggle { display: none; }
 .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex: none; }
 .dot.ref { background: transparent; border: 2px solid var(--muted); }
 .dot.pbdb { background: #b89a6e; }
@@ -207,6 +209,9 @@ footer { font-size: 12px; color: var(--faint); border-top: 1px solid var(--line)
   .strata-leaders { display: none; }
   .map-frame { min-height: 440px; }
   .map-modes button { padding: 0 10px; font-size: 12px; }
+  .filters-toggle { position: absolute; left: 14px; bottom: 14px; display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 18px; font-size: 13px; background: rgba(255, 246, 230, 0.95); border: 1px solid var(--line-strong); }
+  .map-filters { display: none; bottom: 58px; max-height: 50%; overflow-y: auto; pointer-events: auto; padding: 8px; background: rgba(255, 246, 230, 0.95); border: 1px solid var(--line); border-radius: 8px; }
+  .map-filters.open { display: flex; }
   .specimen-title h3 { font-size: 26px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -237,3 +242,9 @@ footer { font-size: 12px; color: var(--faint); border-top: 1px solid var(--line)
 .sea-ticks span:first-child { visibility: hidden; }
 .sea-panel p { margin: 2px 0 0; font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
 .sea-panel .swatch { width: 12px; height: 12px; border-radius: 2px; background: rgb(196, 166, 102); }
+
+/* 좁은 화면: 해수면 패널은 지도 아래쪽 가로로 (기본 규칙 뒤에 와야 덮어쓴다) */
+@media (max-width: 720px) {
+  .sea-panel { top: auto; bottom: 58px; left: 14px; right: 14px; width: auto; padding: 8px 12px; gap: 2px; }
+  .sea-panel p { display: none; }
+}

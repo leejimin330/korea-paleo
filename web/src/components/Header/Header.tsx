@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ancestorsOf } from "../../lib/tree";
 import { useAppStore } from "../../store/useAppStore";
 
 function Footprints() {
@@ -20,16 +21,30 @@ function Footprints() {
   );
 }
 
+const COLLAPSED = 10;
+
 /** 제목 + 오늘의 생물에서 거슬러 오르기(역방향 탐색). */
 export function Header() {
   const modern = useAppStore((s) => s.data?.modern ?? []);
+  const tree = useAppStore((s) => s.data?.tree);
   const path = useAppStore((s) => s.highlightedPath);
   const selectedNode = useAppStore((s) => s.selectedTreeNodeId);
   const reverseSearch = useAppStore((s) => s.reverseSearch);
   const [q, setQ] = useState("");
+  const [expanded, setExpanded] = useState(false);
 
   const query = q.trim();
-  const shown = query ? modern.filter((m) => m.name_ko.includes(query) || m.scientific_name.toLowerCase().includes(query.toLowerCase())) : modern;
+  // 이름·학명뿐 아니라 속한 무리 이름으로도 찾는다 (예: "상어" → 연골어류(상어·가오리) → 백상아리).
+  const matches = (id: string, name: string, sci: string) =>
+    name.includes(query) ||
+    sci.toLowerCase().includes(query.toLowerCase()) ||
+    (tree ? ancestorsOf(tree, id).some((a) => tree.byId.get(a)!.name_ko.includes(query)) : false);
+  const shown = query ? modern.filter((m) => matches(m.tree_node_id, m.name_ko, m.scientific_name)) : modern;
+
+  // 검색 중이거나 펼친 상태가 아니면 앞쪽 일부만 보이되, 지금 강조된 생물은 항상 보인다.
+  const isOn = (id: string) => path.includes(id) || selectedNode === id;
+  const visible = query || expanded ? shown : shown.filter((m, i) => i < COLLAPSED || isOn(m.id));
+  const hiddenCount = shown.length - visible.length;
 
   return (
     <header className="masthead">
@@ -57,14 +72,24 @@ export function Header() {
           <input id="trace" type="search" placeholder="까치, 고라니, 붕어…" value={q} onChange={(e) => setQ(e.target.value)} autoComplete="off" />
         </div>
         <div className="chips">
-          {shown.map((m) => {
-            const on = path.includes(m.id) || selectedNode === m.id;
+          {visible.map((m) => {
+            const on = isOn(m.id);
             return (
               <button key={m.id} type="button" aria-pressed={on} className={on ? "on" : ""} title={m.scientific_name} onClick={() => reverseSearch(m.id)}>
                 {m.name_ko}
               </button>
             );
           })}
+          {hiddenCount > 0 && (
+            <button type="button" className="more" aria-expanded={false} onClick={() => setExpanded(true)}>
+              더 보기 +{hiddenCount}
+            </button>
+          )}
+          {expanded && !query && modern.length > COLLAPSED && (
+            <button type="button" className="more" aria-expanded={true} onClick={() => setExpanded(false)}>
+              접기
+            </button>
+          )}
           {shown.length === 0 && <span className="muted">'{query}'은(는) 아직 목록에 없어요.</span>}
         </div>
       </form>
