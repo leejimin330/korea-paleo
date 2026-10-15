@@ -1,109 +1,155 @@
-import { BADGES, FOSSIL_TYPES, GROUPS } from "../../lib/markers";
+import { BADGES, FOSSIL_TYPES, formatMa, GROUPS } from "../../lib/markers";
 import { ancestorsOf, pathToToday } from "../../lib/tree";
 import { useAppStore } from "../../store/useAppStore";
 
+const FACTS = [
+  "수장룡·어룡·모사사우루스·익룡은 공룡이 아니에요.",
+  "새는 수각류 공룡에서 갈라져 나온 계통이에요.",
+  "고래는 육지 포유류가 다시 바다로 돌아간 경우예요.",
+  "고지리 지도는 판 구조 모델 기반 추정이에요.",
+];
+
+function EmptyState() {
+  return (
+    <div className="specimen-body empty">
+      <div className="specimen-placeholder" aria-hidden="true">
+        <svg width="56" height="56" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <path d="M32 8c-8 10-8 38 0 48M32 8c8 10 8 38 0 48" />
+          <path d="M14 20c10 4 26 4 36 0M12 32h40M14 44c10-4 26-4 36 0" />
+        </svg>
+      </div>
+      <h3>표본을 골라 보세요</h3>
+      <p>지도에서 화석 마커를 누르거나, 아래 계통 레일에서 생물 이름을 누르면 여기에 표본 카드가 열려요.</p>
+      <p className="hint">추천: 백악기 → 지도의 「고성 수각류 발자국」 → 오늘로 이어보기</p>
+    </div>
+  );
+}
+
+/** 표본 카드: 선택된 화석(또는 계통 노드)의 정보와 오늘로 이어보기. */
 export function SpeciesCard() {
   const data = useAppStore((s) => s.data);
+  const eraId = useAppStore((s) => s.selectedEraId);
   const fossilId = useAppStore((s) => s.selectedFossilId);
   const nodeId = useAppStore((s) => s.selectedTreeNodeId);
-  const pivot = useAppStore((s) => s.todayPivot);
   const reverseNote = useAppStore((s) => s.reverseNote);
   const connectToToday = useAppStore((s) => s.connectToToday);
   if (!data) return null;
 
+  const era = data.eras.find((e) => e.id === eraId);
   const fossil = data.fossils.find((f) => f.id === fossilId);
   const node = nodeId ? data.tree.byId.get(nodeId) : undefined;
   const startNodeId = fossil?.tree_node_id ?? node?.id;
-  const today = pivot && startNodeId ? pathToToday(data.tree, startNodeId) : null;
+  const startNode = startNodeId ? data.tree.byId.get(startNodeId) : undefined;
+  const today = startNodeId && startNode?.kind !== "modern" ? pathToToday(data.tree, startNodeId) : null;
+  const name = (id: string) => data.tree.byId.get(id)?.name_ko ?? id;
+  const lineage = startNodeId ? ancestorsOf(data.tree, startNodeId).slice(0, 4).reverse().map(name) : [];
 
-  if (!fossil && !node) {
-    return (
-      <aside className="card empty">
-        <h2>생물 카드</h2>
-        <p>지도에서 화석 마커를 누르거나, 계통수에서 가지를 눌러 보세요.</p>
-        <p className="hint">예: 백악기 → 「고성 수각류 발자국」 → 오늘로 이어보기</p>
-      </aside>
-    );
-  }
-
-  const lineage = startNodeId
-    ? ancestorsOf(data.tree, startNodeId).slice(1, 4).map((id) => data.tree.byId.get(id)!.name_ko).reverse()
-    : [];
+  const onConnect = () => {
+    if (!startNodeId) return;
+    connectToToday(startNodeId);
+    document.getElementById("rails")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
-    <aside className="card" aria-live="polite">
-      {reverseNote && <p className="reverse-note">{reverseNote}</p>}
-      {fossil ? (
-        <>
-          <h2>{fossil.name_ko}</h2>
-          {fossil.scientific_name && <p className="sci">{fossil.scientific_name}</p>}
-          <div className="badges">
-            <span className="chip" style={{ background: GROUPS[fossil.taxon_group]?.color }}>{GROUPS[fossil.taxon_group]?.label ?? fossil.taxon_group}</span>
-            {fossil.badges.map((b) => (
-              <span key={b} className={`badge badge-${b}`} title={BADGES[b].hint}>{BADGES[b].label}</span>
-            ))}
+    <aside className="specimen" aria-label="표본 카드" aria-live="polite">
+      <div className="specimen-head">
+        <span>SPECIMEN · 표본 카드</span>
+        <span>{era ? `ERA · ${formatMa(era.age_ma).toUpperCase()}` : ""}</span>
+      </div>
+
+      {!fossil && !node ? (
+        <EmptyState />
+      ) : (
+        <div className="specimen-body">
+          {reverseNote && <p className="banner">{reverseNote}</p>}
+          <div className="specimen-title">
+            <h3>{fossil?.name_ko ?? node?.name_ko}</h3>
+            {(fossil?.scientific_name ?? (fossil ? null : node?.name)) && <p className="sci">{fossil?.scientific_name ?? node?.name}</p>}
+            <div className="tags">
+              {fossil && (
+                <span className="tag">
+                  <span className="dot" style={{ background: GROUPS[fossil.taxon_group]?.color }} aria-hidden="true" />
+                  {GROUPS[fossil.taxon_group]?.label ?? fossil.taxon_group}
+                </span>
+              )}
+              {fossil?.badges.map((b) => (
+                <span key={b} className={`badge badge-${b}`} title={BADGES[b].hint}>
+                  {BADGES[b].label}
+                </span>
+              ))}
+              {!fossil && node?.kind === "modern" && <span className="tag">현생종</span>}
+              {!fossil && node?.extinct_ma != null && <span className="badge">멸종 · {node.extinct_ma} Ma</span>}
+              {!fossil && node?.uncertain && <span className="badge badge-disputed">논쟁 중</span>}
+            </div>
           </div>
+
           <dl>
             <dt>분류 위치</dt>
-            <dd>{[...lineage, data.tree.byId.get(fossil.tree_node_id)?.name_ko].filter(Boolean).join(" › ")}</dd>
-            <dt>생존 시기</dt>
-            <dd>{fossil.age_range_ma[0]}–{fossil.age_range_ma[1]} Ma (대략)</dd>
-            <dt>화석 종류</dt>
-            <dd>{FOSSIL_TYPES[fossil.fossil_type]}</dd>
-            <dt>발견지</dt>
-            <dd>
-              {fossil.location.name} <span className="muted">({fossil.location.modern.lat.toFixed(2)}, {fossil.location.modern.lng.toFixed(2)}, 대략)</span>
-            </dd>
-            {fossil.pbdb_nearby != null && (
+            <dd>{lineage.join(" › ") || "—"}</dd>
+            {fossil ? (
               <>
-                <dt>PBDB 기록</dt>
-                <dd>반경 15km 내 같은 시대 산출 기록 {fossil.pbdb_nearby}건</dd>
+                <dt>생존 시기</dt>
+                <dd>{fossil.age_range_ma[0]}–{fossil.age_range_ma[1]} Ma (대략)</dd>
+                <dt>화석 종류</dt>
+                <dd>{FOSSIL_TYPES[fossil.fossil_type]}</dd>
+                <dt>발견지</dt>
+                <dd>
+                  {fossil.location.name}
+                  <span className="mono-sub">
+                    {fossil.location.modern.lat.toFixed(2)}, {fossil.location.modern.lng.toFixed(2)} · 대략
+                  </span>
+                </dd>
+                {fossil.pbdb_nearby != null && (
+                  <>
+                    <dt>PBDB 기록</dt>
+                    <dd>반경 15km 내 같은 시대 산출 기록 {fossil.pbdb_nearby}건</dd>
+                  </>
+                )}
               </>
-            )}
-          </dl>
-          <p>{fossil.description}</p>
-          <p className="sources">출처: {fossil.sources.join(" · ")}</p>
-        </>
-      ) : (
-        node && (
-          <>
-            <h2>{node.name_ko}</h2>
-            <p className="sci">{node.name}</p>
-            <div className="badges">
-              {node.kind === "modern" && <span className="chip">현생종</span>}
-              {node.extinct_ma != null && <span className="badge">멸종 ({node.extinct_ma} Ma)</span>}
-              {node.uncertain && <span className="badge badge-disputed">논쟁 중</span>}
-            </div>
-            <dl>
-              <dt>분류 위치</dt>
-              <dd>{lineage.join(" › ") || "—"}</dd>
-              {node.kind !== "modern" && (
+            ) : (
+              node &&
+              node.kind !== "modern" && (
                 <>
                   <dt>등장 시기</dt>
                   <dd>약 {node.time_ma} Ma (대략)</dd>
                 </>
-              )}
-            </dl>
-            {node.note && <p>{node.note}</p>}
-            <p className="sources">출처: 분기 시점은 문헌 기반 대략값{node.ott_id ? ` · Open Tree ott${node.ott_id}` : ""}</p>
-          </>
-        )
-      )}
+              )
+            )}
+          </dl>
 
-      {startNodeId && (fossil || node?.kind !== "modern") && (
-        <button className="primary" onClick={() => connectToToday(startNodeId)}>
-          오늘로 이어보기 →
-        </button>
-      )}
-      {today && (
-        <div className="today">
-          <p>
-            <b>{data.tree.byId.get(today.pivot)?.name_ko}</b>에서 갈라져 오늘까지 이어진 친척:{" "}
-            {today.modern.map((id) => data.tree.byId.get(id)!.name_ko).join(", ")}
+          {fossil ? <p className="desc">{fossil.description}</p> : node?.note && <p className="desc">{node.note}</p>}
+          <p className="source">
+            출처 · {fossil ? fossil.sources.join(" · ") : `분기 시점은 문헌 기반 대략값${node?.ott_id ? ` · Open Tree ott${node.ott_id}` : ""}`}
           </p>
-          <p className="caution">※ 직계 조상이 아니라, 공통 조상에서 갈라진 친척 관계예요.</p>
+
+          {today && (
+            <div className="specimen-actions">
+              <div className="relatives">
+                <span>{name(today.pivot)}에서 갈라져 오늘까지 이어진 친척</span>
+                <strong>{today.modern.map(name).join(" · ")}</strong>
+                <span>직계 조상이 아니라, 공통 조상에서 갈라진 친척 관계예요.</span>
+              </div>
+              <button type="button" className="primary" onClick={onConnect}>
+                오늘로 이어보기
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </button>
+            </div>
+          )}
         </div>
       )}
+
+      <details className="facts">
+        <summary>
+          알아두기 <span>{FACTS.length} +</span>
+        </summary>
+        <ul>
+          {FACTS.map((f) => (
+            <li key={f}>{f}</li>
+          ))}
+        </ul>
+      </details>
     </aside>
   );
 }

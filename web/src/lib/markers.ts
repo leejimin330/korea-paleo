@@ -3,17 +3,17 @@ import type { Badge, Fossil, LngLat, MapMode } from "../types";
 export type MarkerFilter = { groups: string[]; showReference: boolean };
 
 export const GROUPS: Record<string, { label: string; color: string }> = {
-  theropod: { label: "수각류", color: "#d9480f" },
-  sauropod: { label: "용각류", color: "#2b8a3e" },
-  ornithopod: { label: "조각류", color: "#5c940d" },
-  ceratopsian: { label: "각룡류", color: "#a9771f" },
-  dinosaur: { label: "공룡(미분류)", color: "#c2255c" },
-  bird: { label: "조류", color: "#1971c2" },
-  pterosaur: { label: "익룡", color: "#7048e8" },
-  marine_reptile: { label: "해양 파충류", color: "#0c8599" },
-  fish: { label: "어류", color: "#3b5bdb" },
-  invertebrate: { label: "무척추동물", color: "#9c36b5" },
-  mammal: { label: "포유류", color: "#795548" },
+  theropod: { label: "수각류", color: "#F06A3A" },
+  sauropod: { label: "용각류", color: "#5BB06A" },
+  ornithopod: { label: "조각류", color: "#9CC24A" },
+  ceratopsian: { label: "각룡류", color: "#C99A3A" },
+  dinosaur: { label: "공룡(미분류)", color: "#E0507A" },
+  bird: { label: "조류", color: "#4F9BEA" },
+  pterosaur: { label: "익룡", color: "#A07CF0" },
+  marine_reptile: { label: "해양 파충류", color: "#3FB0B0" },
+  fish: { label: "어류", color: "#6B7CF0" },
+  invertebrate: { label: "무척추동물", color: "#C26AE0" },
+  mammal: { label: "포유류", color: "#A9785E" },
 };
 
 export const BADGES: Record<Badge, { label: string; hint: string }> = {

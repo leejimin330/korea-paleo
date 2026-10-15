@@ -1,6 +1,7 @@
-import { AttributionControl, Map as MLMap, NavigationControl, Popup, setWorkerUrl, type GeoJSONSource } from "maplibre-gl";
+import { Map as MLMap, Marker, Popup, setWorkerUrl, type GeoJSONSource } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
+import type { FeatureCollection } from "geojson";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { coordFor, GROUPS, visibleFossils } from "../../lib/markers";
 import { useAppStore } from "../../store/useAppStore";
@@ -9,10 +10,11 @@ import type { Era, MapMode } from "../../types";
 // Vite 번들/사전번들 환경에서는 MapLibre가 워커 위치를 스스로 찾지 못하므로 직접 지정한다.
 setWorkerUrl(workerUrl);
 
-const OCEAN = "#a9cfe0";
-const LAND = "#e8dcc0";
-const ATTRIBUTION =
-  "고지리: GPlates Web Service · Merdith et al. (2021) CC-BY 4.0 | 한반도 윤곽: Natural Earth | 화석 기록: PBDB, 국가유산청";
+// 지층 전시관 팔레트: 크림색 바다, 황토색 육지, 노란 한반도
+const OCEAN = "#F7E7CC";
+const LAND = "#DFC296";
+const INK = "#4A2E1A";
+const AMBER = "#9A5418";
 
 const MODE_LABELS: Record<MapMode, string> = {
   paleo: "과거 지도 (판 복원)",
@@ -31,12 +33,12 @@ function hatchImage() {
   for (let y = 0; y < size; y++)
     for (let x = 0; x < size; x++) {
       const on = (x + y) % size < 2;
-      data.set(on ? [200, 60, 60, 200] : [0, 0, 0, 0], (y * size + x) * 4);
+      data.set(on ? [154, 84, 24, 210] : [0, 0, 0, 0], (y * size + x) * 4);
     }
   return { width: size, height: size, data };
 }
 
-const empty = { type: "FeatureCollection", features: [] } as GeoJSON.FeatureCollection;
+const empty = { type: "FeatureCollection", features: [] } as FeatureCollection;
 
 export function MapView() {
   const container = useRef<HTMLDivElement>(null);
@@ -50,6 +52,10 @@ export function MapView() {
   const selectedFossilId = useAppStore((s) => s.selectedFossilId);
   const showPbdb = useAppStore((s) => s.showPbdb);
   const setMapMode = useAppStore((s) => s.setMapMode);
+  const setGroups = useAppStore((s) => s.setGroups);
+  const setShowReference = useAppStore((s) => s.setShowReference);
+  const setShowPbdb = useAppStore((s) => s.setShowPbdb);
+  const calloutRef = useRef<Marker | null>(null);
   const selectFossil = useAppStore((s) => s.selectFossil);
 
   const era = data?.eras.find((e) => e.id === eraId);
@@ -66,27 +72,25 @@ export function MapView() {
       attributionControl: false,
       renderWorldCopies: false,
     });
-    map.addControl(new NavigationControl({ showCompass: false }), "top-right");
-    map.addControl(new AttributionControl({ compact: true, customAttribution: ATTRIBUTION }), "bottom-right");
     map.on("load", () => {
       map.addImage("hatch", hatchImage());
       for (const id of ["coast", "korea", "env", "pbdb", "fossils"]) map.addSource(id, { type: "geojson", data: empty });
       map.addLayer({ id: "coast", type: "fill", source: "coast", paint: { "fill-color": LAND, "fill-outline-color": LAND } });
       map.addLayer({ id: "env-fill", type: "fill", source: "env", filter: ["!=", ["get", "kind"], "disputed"],
-        paint: { "fill-color": ["match", ["get", "kind"], "lake", "#4dabf7", "sea", "#3bc9db", "land", "#d8c48f", "#ccc"], "fill-opacity": 0.55 } });
+        paint: { "fill-color": ["match", ["get", "kind"], "lake", "#7DB7D6", "sea", "#7CC4C0", "land", "#C9A56C", "#ccc"], "fill-opacity": 0.6 } });
       map.addLayer({ id: "env-disputed", type: "fill", source: "env", filter: ["==", ["get", "kind"], "disputed"], paint: { "fill-pattern": "hatch" } });
-      map.addLayer({ id: "env-line", type: "line", source: "env", paint: { "line-color": "#495057", "line-dasharray": [2, 2], "line-width": 1 } });
-      map.addLayer({ id: "korea-fill", type: "fill", source: "korea", paint: { "fill-color": "#ffd43b", "fill-opacity": 0.35 } });
-      map.addLayer({ id: "korea-line", type: "line", source: "korea", paint: { "line-color": "#e67700", "line-width": 2 } });
+      map.addLayer({ id: "env-line", type: "line", source: "env", paint: { "line-color": INK, "line-dasharray": [2, 2], "line-width": 1 } });
+      map.addLayer({ id: "korea-fill", type: "fill", source: "korea", paint: { "fill-color": "#FCE18A", "fill-opacity": 0.92 } });
+      map.addLayer({ id: "korea-line", type: "line", source: "korea", paint: { "line-color": AMBER, "line-width": 1.6 } });
       map.addLayer({ id: "pbdb", type: "circle", source: "pbdb",
-        paint: { "circle-radius": ["interpolate", ["linear"], ["get", "n"], 1, 2.5, 50, 6], "circle-color": "#495057", "circle-opacity": 0.6 } });
+        paint: { "circle-radius": ["interpolate", ["linear"], ["get", "n"], 1, 2.5, 50, 6], "circle-color": "#7F6044", "circle-opacity": 0.55 } });
       map.addLayer({ id: "fossils", type: "circle", source: "fossils",
         paint: {
-          "circle-radius": ["case", ["get", "selected"], 11, 7],
+          "circle-radius": 7,
           "circle-color": ["get", "color"],
           "circle-opacity": ["case", ["get", "ref"], 0.45, 0.95],
-          "circle-stroke-width": ["case", ["get", "selected"], 3, 1.5],
-          "circle-stroke-color": ["case", ["get", "selected"], "#212529", ["get", "ref"], "#868e96", "#ffffff"],
+          "circle-stroke-width": ["case", ["get", "ref"], 2, 1.5],
+          "circle-stroke-color": ["case", ["get", "ref"], "#74553A", "#FFF6E6"],
         } });
       const tip = new Popup({ closeButton: false, closeOnClick: false, offset: 10 });
       map.on("mouseenter", "fossils", (e) => {
@@ -186,6 +190,25 @@ export function MapView() {
     if (!map.getBounds().contains([c.lng, c.lat])) map.easeTo({ center: [c.lng, c.lat], duration: 700 });
   }, [ready, data, selectedFossilId, mode]);
 
+  // 선택된 표본 말풍선 (링 + 이름표)
+  useEffect(() => {
+    const map = mapRef.current;
+    calloutRef.current?.remove();
+    calloutRef.current = null;
+    const f = fossils.find((x) => x.id === selectedFossilId);
+    if (!ready || !map || !f) return;
+    const el = document.createElement("div");
+    el.className = "callout";
+    const ring = document.createElement("div");
+    ring.className = "callout-ring";
+    const label = document.createElement("div");
+    label.className = "callout-label";
+    label.textContent = f.name_ko;
+    el.append(ring, label);
+    const c = coordFor(f, mode);
+    calloutRef.current = new Marker({ element: el, anchor: "left", offset: [-17, 0] }).setLngLat([c.lng, c.lat]).addTo(map);
+  }, [ready, fossils, selectedFossilId, mode]);
+
   // PBDB 기록 점
   useEffect(() => {
     const map = mapRef.current;
@@ -200,25 +223,72 @@ export function MapView() {
     });
   }, [ready, data, eraId, showPbdb, mode]);
 
+  const groupsHere = data ? [...new Set(data.fossils.filter((f) => f.era_id === eraId).map((f) => f.taxon_group))] : [];
+  const hasReference = !!data?.fossils.some((f) => f.era_id === eraId && f.marker_type !== "korea");
+  const pbdbHere = data ? data.pbdb.filter((p) => p.era_id === eraId).reduce((n, p) => n + p.n, 0) : 0;
+  const groupOn = (g: string) => filter.groups.length === 0 || filter.groups.includes(g);
+  const toggleGroup = (g: string) => {
+    const current = filter.groups.length ? filter.groups : groupsHere;
+    const next = current.includes(g) ? current.filter((x) => x !== g) : [...current, g];
+    setGroups(next.length === groupsHere.length ? [] : next.length === 0 ? ["__none__"] : next);
+  };
+  const zoom = (d: number) => mapRef.current?.easeTo({ zoom: mapRef.current.getZoom() + d, duration: 300 });
+
   return (
-    <section className="map-view" aria-label="지도">
-      <div className="map-modes" role="radiogroup" aria-label="지도 모드">
-        {(Object.keys(MODE_LABELS) as MapMode[]).map((m) => (
-          <button key={m} role="radio" aria-checked={mode === m} className={mode === m ? "active" : ""} onClick={() => setMapMode(m)}>
-            {MODE_LABELS[m]}
+    <figure className="map-view">
+      <div className="map-frame">
+        <div ref={container} className="map-canvas" aria-label="화석 지도" role="region" />
+
+        <div role="group" aria-label="지도 보기 방식" className="map-modes">
+          {(Object.keys(MODE_LABELS) as MapMode[]).map((m) => (
+            <button key={m} type="button" aria-pressed={mode === m} className={mode === m ? "on" : ""} onClick={() => setMapMode(m)}>
+              {MODE_LABELS[m]}
+            </button>
+          ))}
+        </div>
+
+        <div className="map-zoom">
+          <button type="button" aria-label="확대" onClick={() => zoom(1)}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
           </button>
-        ))}
+          <button type="button" aria-label="축소" onClick={() => zoom(-1)}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M5 12h14" /></svg>
+          </button>
+        </div>
+
+        <div className="map-filters" role="group" aria-label="마커 필터">
+          {groupsHere.map((g) => (
+            <button key={g} type="button" aria-pressed={groupOn(g)} className={groupOn(g) ? "" : "off"} onClick={() => toggleGroup(g)}>
+              <span className="dot" style={{ background: GROUPS[g]?.color }} aria-hidden="true" />
+              {GROUPS[g]?.label ?? g}
+            </button>
+          ))}
+          {hasReference && (
+            <button type="button" aria-pressed={filter.showReference} className={filter.showReference ? "" : "off"} onClick={() => setShowReference(!filter.showReference)}>
+              <span className="dot ref" aria-hidden="true" />
+              동아시아 참고 화석
+            </button>
+          )}
+          {pbdbHere > 0 && (
+            <button type="button" aria-pressed={showPbdb} className={showPbdb ? "" : "off"} onClick={() => setShowPbdb(!showPbdb)}>
+              <span className="dot pbdb" aria-hidden="true" />
+              PBDB 산출 기록 {pbdbHere}건
+            </button>
+          )}
+        </div>
       </div>
-      <div ref={container} className="map-canvas" />
-      <p className="map-note">
-        {mode === "paleo"
-          ? era && era.age_ma >= 1
-            ? `노란 윤곽 = 오늘의 한반도를 ${era.age_ma}Ma 시점으로 되돌린 위치. 판 구조 모델 기반 추정이에요.`
-            : "빙하기에는 판 위치가 지금과 거의 같아요. 해수면 슬라이더는 다음 단계(Phase 2)에서 추가돼요."
-          : mode === "overlay"
-            ? "색칠한 영역은 당시 환경을 손으로 그린 개략도예요. 빗금 = 학계 논쟁 구간."
-            : "마커는 실제 화석 발견지(대략적인 읍·면 위치)예요."}
-      </p>
-    </section>
+      <figcaption>
+        <span>
+          {mode === "paleo"
+            ? era && era.age_ma >= 1
+              ? `노란 윤곽 = 오늘의 한반도를 ${era.age_ma} Ma 시점으로 되돌린 위치. 판 구조 모델 기반 추정.`
+              : "빙하기에는 판 위치가 지금과 거의 같아요. 해수면 −120m 슬라이더는 다음 단계(Phase 2)에서 추가돼요."
+            : mode === "overlay"
+              ? "색칠한 영역은 당시 환경을 손으로 그린 개략도. 빗금 = 학계 논쟁 구간."
+              : "마커는 실제 화석 발견지(읍·면 수준의 대략 위치)예요."}
+        </span>
+        <span className="attribution">고지리 GPlates Web Service · Merdith et al. (2021) CC-BY 4.0 · 윤곽 Natural Earth · 화석 PBDB, 국가유산청</span>
+      </figcaption>
+    </figure>
   );
 }
