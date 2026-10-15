@@ -1,9 +1,10 @@
-import { Map as MLMap, Marker, Popup, setWorkerUrl, type GeoJSONSource } from "maplibre-gl";
+import { Map as MLMap, Marker, Popup, setWorkerUrl, type GeoJSONSource, type ImageSource } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import type { FeatureCollection } from "geojson";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { coordFor, GROUPS, visibleFossils } from "../../lib/markers";
+import { gridCorners, renderSeaLevel, type BathyGrid } from "../../lib/sealevel";
 import { useAppStore } from "../../store/useAppStore";
 import type { Era, MapMode } from "../../types";
 
@@ -56,9 +57,14 @@ export function MapView() {
   const setShowReference = useAppStore((s) => s.setShowReference);
   const setShowPbdb = useAppStore((s) => s.setShowPbdb);
   const calloutRef = useRef<Marker | null>(null);
+  const seaLevel = useAppStore((s) => s.seaLevel);
+  const setSeaLevel = useAppStore((s) => s.setSeaLevel);
+  const [bathy, setBathy] = useState<BathyGrid | null>(null);
   const selectFossil = useAppStore((s) => s.selectFossil);
 
   const era = data?.eras.find((e) => e.id === eraId);
+  const showSea = !!era?.has_sea_level_slider && mode !== "modern";
+  const sea = useMemo(() => (bathy && showSea ? renderSeaLevel(bathy, seaLevel) : null), [bathy, showSea, seaLevel]);
   const fossils = useMemo(() => (data ? visibleFossils(data.fossils, eraId, filter) : []), [data, eraId, filter]);
 
   // 지도 생성 (한 번)
@@ -173,6 +179,42 @@ export function MapView() {
     map.flyTo({ center: view.center, zoom: view.zoom, duration: 900 });
   }, [ready, era, mode]);
 
+  // 해수면: 수심 그리드는 처음 필요할 때 한 번만 받는다.
+  useEffect(() => {
+    if (!showSea || bathy) return;
+    let alive = true;
+    fetch(`${import.meta.env.BASE_URL}data/bathymetry.json`)
+      .then((r) => r.json() as Promise<BathyGrid>)
+      .then((g) => alive && setBathy(g))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [showSea, bathy]);
+
+  // 해수면 이미지: 슬라이더 값마다 그리드를 칠해 이미지 소스로 올린다 (해안선 위, 환경·한반도 윤곽 아래).
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map) return;
+    if (!sea || !bathy) {
+      if (map.getLayer("sealevel")) map.setLayoutProperty("sealevel", "visibility", "none");
+      return;
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = sea.width;
+    canvas.height = sea.height;
+    canvas.getContext("2d")!.putImageData(new ImageData(sea.rgba, sea.width, sea.height), 0, 0);
+    const url = canvas.toDataURL();
+    const coordinates = gridCorners(bathy);
+    const src = map.getSource("sealevel") as ImageSource | undefined;
+    if (src) src.updateImage({ url, coordinates });
+    else {
+      map.addSource("sealevel", { type: "image", url, coordinates });
+      map.addLayer({ id: "sealevel", type: "raster", source: "sealevel", paint: { "raster-fade-duration": 0, "raster-resampling": "nearest" } }, "env-fill");
+    }
+    map.setLayoutProperty("sealevel", "visibility", "visible");
+  }, [ready, sea, bathy]);
+
   // 화석 마커
   useEffect(() => {
     const map = mapRef.current;
@@ -265,6 +307,33 @@ export function MapView() {
           </button>
         </div>
 
+        {showSea && (
+          <div className="sea-panel">
+            <label htmlFor="sea-level">
+              해수면 <strong>{seaLevel === 0 ? "오늘" : `${seaLevel}m`}</strong>
+            </label>
+            <input
+              id="sea-level"
+              type="range"
+              min={-130}
+              max={0}
+              step={5}
+              value={seaLevel}
+              onChange={(e) => setSeaLevel(Number(e.target.value))}
+              aria-valuetext={`해수면 ${seaLevel}미터`}
+            />
+            <div className="sea-ticks" aria-hidden="true">
+              <span>−130m</span>
+              <span className="lgm">최종빙기 −120m</span>
+              <span>오늘 0m</span>
+            </div>
+            <p>
+              <i className="swatch" aria-hidden="true" />
+              새로 드러난 땅 {!sea ? "계산 중…" : sea.exposedKm2 < 5000 ? "거의 없음" : `약 ${Math.round(sea.exposedKm2 / 10000).toLocaleString()}만 km²`}
+            </p>
+          </div>
+        )}
+
         <div className="map-filters" role="group" aria-label="마커 필터">
           {groupsHere.map((g) => (
             <button key={g} type="button" aria-pressed={groupOn(g)} className={groupOn(g) ? "" : "off"} onClick={() => toggleGroup(g)}>
@@ -291,12 +360,14 @@ export function MapView() {
           {mode === "paleo"
             ? era && era.age_ma >= 1
               ? `노란 윤곽 = 오늘의 한반도를 ${era.age_ma} Ma 시점으로 되돌린 위치. 판 구조 모델 기반 추정.`
-              : "빙하기에는 판 위치가 지금과 거의 같아요. 해수면 −120m 슬라이더는 다음 단계(Phase 2)에서 추가돼요."
+              : "진한 황토색 = 해수면이 낮아져 드러난 땅. 오늘의 수심만으로 계산한 단순 추정이에요 (퇴적·지각 변동 미반영). 빗금 = 대한해협 논쟁 구간."
             : mode === "overlay"
-              ? "색칠한 영역은 당시 환경을 손으로 그린 개략도. 빗금 = 학계 논쟁 구간."
+              ? showSea
+                ? "진한 황토색 = 해수면이 낮아져 드러난 땅 (오늘의 수심 기준 단순 추정). 빗금 = 대한해협 논쟁 구간."
+                : "색칠한 영역은 당시 환경을 손으로 그린 개략도. 빗금 = 학계 논쟁 구간."
               : "마커는 실제 화석 발견지(읍·면 수준의 대략 위치)예요."}
         </span>
-        <span className="attribution">고지리 GPlates Web Service · Merdith et al. (2021) CC-BY 4.0 · 윤곽 Natural Earth · 화석 PBDB, 국가유산청</span>
+        <span className="attribution">고지리 GPlates Web Service · Merdith et al. (2021) CC-BY 4.0 · 윤곽 Natural Earth · 화석 PBDB, 국가유산청{showSea ? " · 수심 NOAA ETOPO1" : ""}</span>
       </figcaption>
     </figure>
   );

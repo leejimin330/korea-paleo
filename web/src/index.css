@@ -225,3 +225,15 @@ footer { font-size: 12px; color: var(--faint); border-top: 1px solid var(--line)
 .taxa li { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; padding: 3px 0; border-bottom: 1px dotted var(--line); }
 .taxa li span { flex: none; font-family: var(--mono); font-size: 11px; color: var(--faint); }
 .badge-auto_pbdb { border-style: dotted; }
+
+/* 해수면 슬라이더 */
+.sea-panel { position: absolute; top: 64px; left: 14px; width: min(300px, calc(100% - 92px)); padding: 12px 14px; background: rgba(255, 246, 230, 0.95); border: 1px solid var(--line); border-radius: 8px; display: flex; flex-direction: column; gap: 6px; }
+.sea-panel label { font-size: 13px; }
+.sea-panel label strong { font-family: var(--mono); font-size: 15px; color: var(--amber); margin-left: 6px; }
+.sea-panel input[type="range"] { width: 100%; accent-color: var(--amber); min-height: 28px; }
+.sea-ticks { position: relative; display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: var(--faint); }
+.sea-ticks .lgm { position: absolute; left: calc(7.7% - 2px); top: 0; color: var(--amber); white-space: nowrap; }
+.sea-ticks .lgm::before { content: "▲ "; }
+.sea-ticks span:first-child { visibility: hidden; }
+.sea-panel p { margin: 2px 0 0; font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.sea-panel .swatch { width: 12px; height: 12px; border-radius: 2px; background: rgb(196, 166, 102); }

@@ -2,6 +2,7 @@
 import json
 import shutil
 
+import build_bathymetry
 import build_fossils
 import build_tree
 import fetch_paleogeo
@@ -12,6 +13,7 @@ def main():
     fetch_paleogeo.main()
     build_fossils.main()
     build_tree.main()
+    build_bathymetry.main()
     write_json(PROCESSED / "eras.json", json.loads((MANUAL / "eras.json").read_text(encoding="utf-8")))
     shutil.copy(MANUAL / "environments.geojson", PROCESSED / "environments.geojson")
     if WEB_DATA.exists():

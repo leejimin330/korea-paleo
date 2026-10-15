@@ -48,8 +48,16 @@ async function getJson<T>(path: string): Promise<T> {
 const clearSelection = { selectedFossilId: null, selectedTreeNodeId: null, highlightedPath: [], todayPivot: null, reverseNote: null };
 
 /** 시대가 바뀌면 그 시대에 없는 그룹으로 마커가 숨지 않도록 그룹 필터를 초기화한다. */
+// 해수면 슬라이더가 있는 시대(빙하기)는 최종빙기 최성기 수준(-120m)에서 시작한다.
+export const GLACIAL_SEA_LEVEL = -120;
 const eraPatch = (s: AppState, eraId: string) =>
-  eraId === s.selectedEraId ? { selectedEraId: eraId } : { selectedEraId: eraId, seaLevel: 0, markerFilter: { ...s.markerFilter, groups: [] } };
+  eraId === s.selectedEraId
+    ? { selectedEraId: eraId }
+    : {
+        selectedEraId: eraId,
+        seaLevel: s.data?.eras.find((e) => e.id === eraId)?.has_sea_level_slider ? GLACIAL_SEA_LEVEL : 0,
+        markerFilter: { ...s.markerFilter, groups: [] },
+      };
 
 export const useAppStore = create<AppState>((set, get) => ({
   data: null,
