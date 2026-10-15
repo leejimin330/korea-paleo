@@ -13,7 +13,9 @@ export type Era = {
   status: "full" | "preview";
 };
 
-export type Badge = "not_dinosaur" | "species_unidentified" | "east_asia_reference" | "trace_fossil" | "disputed";
+export type Badge = "not_dinosaur" | "species_unidentified" | "east_asia_reference" | "trace_fossil" | "disputed" | "auto_pbdb";
+
+export type PbdbTaxon = { name: string; rank: string; pbdb_no: string; n: number };
 
 export type Fossil = {
   id: string;
@@ -21,7 +23,7 @@ export type Fossil = {
   scientific_name: string | null;
   taxon_group: string;
   tree_node_id: string;
-  fossil_type: "trackway" | "egg" | "skeleton" | "tooth";
+  fossil_type: "trackway" | "egg" | "skeleton" | "tooth" | "record";
   era_id: string;
   age_range_ma: [number, number];
   location: { name: string; modern: LngLat; paleo: LngLat };
@@ -30,6 +32,8 @@ export type Fossil = {
   description: string;
   sources: string[];
   pbdb_nearby: number | null;
+  /** 이 마커에 묶인 PBDB 분류군 (자동 마커·대표종·수작업 사이트 보강). */
+  taxa?: PbdbTaxon[];
 };
 
 export type TreeNode = {

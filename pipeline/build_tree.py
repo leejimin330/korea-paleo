@@ -9,6 +9,7 @@ TNRS_URL = "https://api.opentreeoflife.org/v3/tnrs/match_names"
 GROUP_BY_ANCESTOR = {
     "aves": "bird", "mammalia": "mammal", "actinopterygii": "fish", "squamata": "reptile",
     "testudines": "reptile", "arthropoda": "invertebrate", "brachiopoda": "invertebrate",
+    "mollusca": "invertebrate", "cnidaria": "invertebrate", "echinodermata": "invertebrate", "insecta": "insect", "arachnida": "insect",
 }
 
 

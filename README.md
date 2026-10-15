@@ -43,7 +43,11 @@ cd pipeline
 | `fetch_paleogeo.py` | GPlates Web Service(MERDITH2021)로 시대별 해안선, Natural Earth 한반도 윤곽 복원 |
 | `fetch_fossils.py` | PBDB `cc=KR` 산출 기록 |
 | `build_fossils.py` | 수작업 화석지(`manual/korea_fossil_sites.json`) + PBDB 집계 + 좌표 복원 |
+| `pbdb_taxa.py` | PBDB 속·종 기록 → 계통수 노드(`manual/pbdb_taxon_map.json`), 시대×계통×시군(`manual/places.csv`) 단위 자동 마커, 대표종(`manual/featured_taxa.json`) 마커 |
 | `build_tree.py` | `manual/taxa.csv` → `tree.json`, Open Tree TNRS로 `ott_id` 매칭 |
+
+자동 마커: 학명이 붙은 PBDB 기록을 같은 시대·계통·가까운 시군끼리 묶어 마커 하나로 만들고(「자동 수집」 배지),
+같은 계통의 수작업 화석지가 15km 안에 있으면 그 카드에 분류군 목록으로 붙인다. 분류가 불명확한 기록은 매핑 규칙에서 `null`로 제외한다.
 
 수작업 데이터 추가: 화석지는 `manual/korea_fossil_sites.json`, 계통수 노드·현생종은 `manual/taxa.csv`
 (현생종은 `kind=modern`). `tests/test_pipeline.py`가 노드 참조·출처 누락을 검사한다.

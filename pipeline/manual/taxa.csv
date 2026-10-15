@@ -45,3 +45,23 @@ neornithes,aves,Neornithes,현생 조류,clade,100,,1,현생 조류 기원 시�
 pica-serica,neornithes,Pica serica,까치,modern,0,,0,
 grus-japonensis,neornithes,Grus japonensis,두루미,modern,0,,0,
 anas-platyrhynchos,neornithes,Anas platyrhynchos,청둥오리,modern,0,,0,
+mollusca,animalia,Mollusca,연체동물,clade,540,,0,
+bivalvia,mollusca,Bivalvia,이매패류(조개),clade,520,,0,
+tegillarca-granosa,bivalvia,Tegillarca granosa,꼬막,modern,0,,0,
+gastropoda,mollusca,Gastropoda,복족류(고둥·달팽이),clade,520,,0,
+cipangopaludina-chinensis,gastropoda,Cipangopaludina chinensis,논우렁이,modern,0,,0,
+cephalopoda,mollusca,Cephalopoda,두족류(앵무조개·오징어),clade,500,,0,
+todarodes-pacificus,cephalopoda,Todarodes pacificus,살오징어,modern,0,,0,
+rostroconchia,mollusca,Rostroconchia,로스트로콘키아류,clade,530,252,0,조개와 닮았지만 별개의 멸종 연체동물 무리
+insecta,arthropoda,Insecta,곤충,clade,400,,0,
+tenodera-sinensis,insecta,Tenodera sinensis,왕사마귀,modern,0,,0,
+crocothemis-servilia,insecta,Crocothemis servilia,고추잠자리,modern,0,,0,
+arachnida,arthropoda,Arachnida,거미류,clade,420,,0,
+trichonephila-clavata,arachnida,Trichonephila clavata,무당거미,modern,0,,0,
+echinodermata,animalia,Echinodermata,극피동물,clade,520,,0,
+patiria-pectinifera,echinodermata,Patiria pectinifera,별불가사리,modern,0,,0,
+cnidaria,animalia,Cnidaria,자포동물,clade,580,,0,
+aurelia-aurita,cnidaria,Aurelia aurita,보름달물해파리,modern,0,,0,
+porifera,animalia,Porifera,해면동물,clade,600,,0,
+crocodylomorpha,archosauria,Crocodylomorpha,악어 계통,clade,230,,0,오늘날 악어로 이어지는 계통 (한반도에는 현생 악어가 없음)
+choristodera,sauropsida,Choristodera,코리스토데라류,clade,168,11,1,파충류 안에서의 위치는 논쟁 중

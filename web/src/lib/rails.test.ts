@@ -62,7 +62,7 @@ describe("buildRails", () => {
 
   it("skips East Asian reference fossils and merges nearby dots", () => {
     const ref = { ...fossil("futaba", "theropoda", [86, 84]), marker_type: "east_asia_reference" } as Fossil;
-    const near = [fossil("a", "aves", [110, 108]), fossil("b", "aves", [109, 107]), ref].map((f) => ({ marker_type: "korea", ...f }) as Fossil);
+    const near = [fossil("a", "aves", [110, 108]), fossil("b", "aves", [109, 107]), ref];
     const l = buildRails(idx, near, "cretaceous").flatMap((g) => g.lanes).find((x) => x.id === "magpie")!;
     expect(l.dots).toHaveLength(1);
     expect(l.dots[0].fossilIds).toEqual(["a", "b"]);

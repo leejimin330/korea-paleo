@@ -1,0 +1,57 @@
+{
+  "_comment": "PBDB 분류 → 계통수 노드. family → order → class → phylum 순으로 처음 맞는 규칙을 쓴다. null 은 '분류 불명확으로 제외'.",
+  "family": {
+    "Avipedidae": "aves",
+    "Ignotornidae": "aves",
+    "Jindongornipodidae": "aves",
+    "Koreanaornipodidae": "aves",
+    "Ameghinichnidae": "mammalia",
+    "Ankylosauridae": "ornithischia",
+    "Iguanodontipodidae": "ornithopoda",
+    "Leptoceratopsidae": "ceratopsia",
+    "Thescelosauridae": "ornithischia",
+    "Caseidae": null,
+    "Wakinoichthiidae": "teleostei",
+    "Batrachopodidae": "crocodylomorpha",
+    "Dictyoolithidae": "dinosauria",
+    "Stalicoolithidae": "dinosauria",
+    "Elongatoolithidae": "theropoda",
+    "Faveoloolithidae": "saurischia",
+    "Dromaeopodidae": "dromaeosauridae",
+    "Dromaeosauridae": "dromaeosauridae",
+    "Eubrontidae": "theropoda",
+    "Grallatoridae": "theropoda"
+  },
+  "order": {
+    "Pterosauria": "pterosauria",
+    "Squamata": "squamata",
+    "Testudines": "testudines",
+    "Choristodera": "choristodera"
+  },
+  "class": {
+    "Aves": "aves",
+    "Mammalia": "mammalia",
+    "Ornithischia": "ornithischia",
+    "Saurischia": "saurischia",
+    "Reptilia": null,
+    "Insecta": "insecta",
+    "Arachnida": "arachnida",
+    "Malacostraca": "malacostraca",
+    "Trilobita": "trilobita",
+    "Artiopoda": "trilobita",
+    "Conodonta": "conodonta",
+    "Bivalvia": "bivalvia",
+    "Gastropoda": "gastropoda",
+    "Paragastropoda": "mollusca",
+    "Cephalopoda": "cephalopoda",
+    "Rostroconchia": "rostroconchia",
+    "Tergomya": "mollusca",
+    "Helcionelloida": "mollusca"
+  },
+  "phylum": {
+    "Brachiopoda": "brachiopoda",
+    "Porifera": "porifera",
+    "Cnidaria": "cnidaria",
+    "Echinodermata": "echinodermata"
+  }
+}

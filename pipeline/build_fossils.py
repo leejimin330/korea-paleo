@@ -4,7 +4,9 @@ import math
 from collections import Counter, defaultdict
 
 from common import ERA_TIMES, MANUAL, PROCESSED, reconstruct_points, write_json
+from build_tree import read_rows
 from fetch_fossils import fetch
+from pbdb_taxa import auto_markers, featured_markers, load_map, load_places
 
 ERA_RANGES = {"paleozoic": (500, 443), "cretaceous": (145, 66), "ice_age": (0.13, 0.0117)}
 
@@ -68,15 +70,27 @@ def attach_paleo(items, get_modern, set_paleo):
 
 def main():
     sites = json.loads((MANUAL / "korea_fossil_sites.json").read_text(encoding="utf-8"))
-    points = aggregate_pbdb(fetch("KR"))
+    records = fetch("KR")
+    points = aggregate_pbdb(records)
     for s in sites:
         s["pbdb_nearby"] = pbdb_count_near(s, points) if s["marker_type"] == "korea" else None
+
+    rows, rules, places = read_rows(MANUAL / "taxa.csv"), load_map(), load_places()
+    featured = json.loads((MANUAL / "featured_taxa.json").read_text(encoding="utf-8"))
+    auto, attach, skipped = auto_markers(records, era_of, rules, places, rows, sites)
+    for s in sites:
+        if s["id"] in attach:
+            s["taxa"] = attach[s["id"]]
+    feat = featured_markers(records, era_of, rules, places, rows, featured)
+    print(f"auto markers {len(auto)} ({dict(Counter(m['era_id'] for m in auto))}), featured {len(feat)}, "
+          f"attached to manual sites {len(attach)}, skipped unmapped records {skipped}")
+    sites = sites + feat + auto
     attach_paleo(sites, lambda s: s["location"]["modern"], lambda s, p: s["location"].__setitem__("paleo", p))
     attach_paleo(points, lambda p: p["modern"], lambda p, q: p.__setitem__("paleo", q))
     write_json(PROCESSED / "fossils.json", sites)
     write_json(PROCESSED / "pbdb_points.json", points)
     print(f"sites {len(sites)}, pbdb points {len(points)} {dict(Counter(p['era_id'] for p in points))}")
-    print("pbdb_nearby:", {s["id"]: s["pbdb_nearby"] for s in sites if s["marker_type"] == "korea"})
+
 
 
 if __name__ == "__main__":

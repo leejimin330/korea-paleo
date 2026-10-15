@@ -1,6 +1,7 @@
 import { BADGES, FOSSIL_TYPES, formatMa, GROUPS } from "../../lib/markers";
 import { ancestorsOf, pathToToday } from "../../lib/tree";
 import { useAppStore } from "../../store/useAppStore";
+import type { Fossil } from "../../types";
 
 const FACTS = [
   "수장룡·어룡·모사사우루스·익룡은 공룡이 아니에요.",
@@ -22,6 +23,40 @@ function EmptyState() {
       <p>지도에서 화석 마커를 누르거나, 아래 계통 레일에서 생물 이름을 누르면 여기에 표본 카드가 열려요.</p>
       <p className="hint">추천: 백악기 → 지도의 「고성 수각류 발자국」 → 오늘로 이어보기</p>
     </div>
+  );
+}
+
+const PBDB_TAXON_URL = "https://paleobiodb.org/classic/checkTaxonInfo?taxon_no=";
+const RANK_KO: Record<string, string> = { species: "종", subspecies: "아종", genus: "속", subgenus: "아속" };
+
+/** 이 마커에 묶인 PBDB 분류군 목록. 대표종처럼 자기 자신 하나뿐이면 생략. */
+function TaxaList({ fossil }: { fossil: Fossil }) {
+  const taxa = fossil.taxa ?? [];
+  if (taxa.length === 0 || (taxa.length === 1 && taxa[0].name === fossil.scientific_name)) return null;
+  const items = taxa.map((t) => (
+    <li key={t.name}>
+      <a href={`${PBDB_TAXON_URL}${t.pbdb_no}`} target="_blank" rel="noreferrer">
+        <i>{t.name}</i>
+      </a>
+      <span>
+        {RANK_KO[t.rank] ?? t.rank} · {t.n}건
+      </span>
+    </li>
+  ));
+  const label = fossil.badges.includes("auto_pbdb") ? "묶인 분류군" : "이 지점의 PBDB 분류군";
+  return taxa.length <= 6 ? (
+    <div className="taxa">
+      <h4>{label} {taxa.length}</h4>
+      <ul>{items}</ul>
+    </div>
+  ) : (
+    <details className="taxa">
+      <summary>
+        <h4>{label} {taxa.length}</h4>
+        <span>펼치기</span>
+      </summary>
+      <ul>{items}</ul>
+    </details>
   );
 }
 
@@ -118,6 +153,7 @@ export function SpeciesCard() {
           </dl>
 
           {fossil ? <p className="desc">{fossil.description}</p> : node?.note && <p className="desc">{node.note}</p>}
+          {fossil && <TaxaList fossil={fossil} />}
           <p className="source">
             출처 · {fossil ? fossil.sources.join(" · ") : `분기 시점은 문헌 기반 대략값${node?.ott_id ? ` · Open Tree ott${node.ott_id}` : ""}`}
           </p>

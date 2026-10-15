@@ -102,7 +102,7 @@ a:hover { color: var(--amber-dark); }
 .callout-label { padding: 4px 10px; background: var(--ink); color: var(--paper); border-radius: 4px; font-size: 13px; font-weight: 600; white-space: nowrap; }
 .maplibregl-popup-content { background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 4px 16px rgba(74, 46, 26, 0.15); font-family: var(--sans); }
 .maplibregl-popup-tip { display: none; }
-.marker-chooser .maplibregl-popup-content { padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+.marker-chooser .maplibregl-popup-content { padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; max-height: 300px; overflow-y: auto; }
 .marker-chooser p { margin: 0 0 2px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--muted); }
 .marker-chooser button { text-align: left; border: 1px solid var(--line); background: var(--card); border-radius: 6px; padding: 5px 10px; font-size: 13px; min-height: 32px; }
 .marker-chooser button:hover { border-color: var(--amber); color: var(--amber); }
@@ -182,8 +182,13 @@ a:hover { color: var(--amber-dark); }
 .lane .thick.dashed { background: repeating-linear-gradient(90deg, #a9875a 0 6px, transparent 6px 10px); }
 .lane .alive { position: absolute; top: 10px; right: -5px; width: 10px; height: 10px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 2px var(--card); }
 .lane .dagger { position: absolute; top: 3px; font-weight: 600; font-size: 14px; }
-.lane .fossil-dot { position: absolute; top: 7px; width: 16px; height: 16px; margin-left: -8px; padding: 0; border-radius: 50%; background: var(--amber); border: 2px solid var(--card); }
-.lane .fossil-dot:hover { transform: scale(1.2); }
+.lane .dot-wrap { position: absolute; top: 7px; z-index: 1; }
+.lane .fossil-dot { display: grid; place-items: center; width: 16px; height: 16px; margin-left: -8px; padding: 0; border-radius: 50%; background: var(--amber); border: 2px solid var(--card); color: var(--card); font-family: var(--mono); font-size: 9px; line-height: 1; }
+.lane .fossil-dot.multi { width: 20px; height: 20px; margin: -2px 0 0 -10px; }
+.lane .fossil-dot:hover { transform: scale(1.15); }
+.dot-menu { position: absolute; top: 24px; left: -12px; z-index: 5; display: flex; flex-direction: column; gap: 2px; padding: 6px; min-width: 200px; background: var(--card); border: 1px solid var(--line-strong); border-radius: 6px; box-shadow: 0 6px 20px rgba(74, 46, 26, 0.18); }
+.dot-menu button { text-align: left; background: transparent; border: 0; border-radius: 4px; padding: 6px 8px; font-size: 13px; white-space: nowrap; }
+.dot-menu button:hover { background: var(--sand); color: var(--amber); }
 .lane.on .nm { color: var(--amber); font-weight: 600; }
 .lane.on .thin { border-top-color: var(--amber); }
 .lane.on .thick { background: var(--amber); box-shadow: 0 0 12px rgba(252, 225, 138, 0.9); }
@@ -205,3 +210,15 @@ footer { font-size: 12px; color: var(--faint); border-top: 1px solid var(--line)
   html { scroll-behavior: auto; }
   .strata-needle, .rails-guides .band, .strata-swatch { transition: none; }
 }
+
+/* PBDB 분류군 목록 */
+.taxa { border-top: 1px solid var(--line); padding-top: 12px; }
+.taxa h4 { margin: 0; font-size: 13px; font-weight: 600; }
+.taxa summary { display: flex; justify-content: space-between; align-items: center; cursor: pointer; list-style: none; min-height: 32px; }
+.taxa summary::-webkit-details-marker { display: none; }
+.taxa summary span { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.taxa[open] summary span { visibility: hidden; }
+.taxa ul { margin: 8px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr; gap: 2px; max-height: 260px; overflow-y: auto; }
+.taxa li { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; padding: 3px 0; border-bottom: 1px dotted var(--line); }
+.taxa li span { flex: none; font-family: var(--mono); font-size: 11px; color: var(--faint); }
+.badge-auto_pbdb { border-style: dotted; }

@@ -18,7 +18,7 @@ export const RAIL_GROUPS: GroupDef[] = [
 ];
 const DISPLAY_ORDER = ["invertebrates", "fishes", "mammals", "reptiles", "dinosaurs", "birds"];
 
-export type RailDot = { pct: number; fossilIds: string[]; title: string };
+export type RailDot = { pct: number; fossilIds: string[]; names: string[]; title: string };
 
 export type Lane = {
   id: string;
@@ -64,8 +64,9 @@ export function buildRails(idx: TreeIndex, fossils: Fossil[], eraId: string): Ra
       if ((idx.depth.get(f.tree_node_id) ?? 0) < anchorDepth) continue;
       // 2% 간격으로 묶어 점이 겹치지 않게 한다.
       const pct = Math.round(xPct((f.age_range_ma[0] + f.age_range_ma[1]) / 2) / 2) * 2;
-      const dot = byPct.get(pct) ?? { pct, fossilIds: [], title: "" };
+      const dot = byPct.get(pct) ?? { pct, fossilIds: [], names: [], title: "" };
       dot.fossilIds.push(f.id);
+      dot.names.push(f.name_ko);
       dot.title = dot.title ? `${dot.title}, ${f.name_ko}` : f.name_ko;
       byPct.set(pct, dot);
     }

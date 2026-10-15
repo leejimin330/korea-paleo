@@ -86,7 +86,7 @@ export function MapView() {
         paint: { "circle-radius": ["interpolate", ["linear"], ["get", "n"], 1, 2.5, 50, 6], "circle-color": "#7F6044", "circle-opacity": 0.55 } });
       map.addLayer({ id: "fossils", type: "circle", source: "fossils",
         paint: {
-          "circle-radius": 7,
+          "circle-radius": ["case", ["get", "auto"], 5, 7],
           "circle-color": ["get", "color"],
           "circle-opacity": ["case", ["get", "ref"], 0.45, 0.95],
           "circle-stroke-width": ["case", ["get", "ref"], 2, 1.5],
@@ -107,7 +107,16 @@ export function MapView() {
       map.on("click", "fossils", (e) => {
         const { x, y } = e.point;
         const hits = map.queryRenderedFeatures([[x - 8, y - 8], [x + 8, y + 8]], { layers: ["fossils"] });
-        const unique = [...new Map(hits.map((h) => [String(h.properties.id), String(h.properties.name)])).entries()];
+        // 수작업·대표 화석을 자동 묶음보다 먼저 보여준다.
+        const unique = [...new Map(hits.map((h) => [String(h.properties.id), { name: String(h.properties.name), auto: !!h.properties.auto }])).entries()]
+          .sort((x, y) => Number(x[1].auto) - Number(y[1].auto))
+          .map(([id, v]) => [id, v.name] as const);
+        // 너무 많이 겹치면 목록 대신 그 지점으로 확대한다 (클러스터 동작).
+        if (unique.length > 8 && map.getZoom() < 9) {
+          chooser.remove();
+          map.easeTo({ center: e.lngLat, zoom: map.getZoom() + 2, duration: 500 });
+          return;
+        }
         if (unique.length === 1) {
           chooser.remove();
           selectFossil(unique[0][0]);
@@ -175,7 +184,7 @@ export function MapView() {
         return {
           type: "Feature",
           geometry: { type: "Point", coordinates: [c.lng, c.lat] },
-          properties: { id: f.id, name: f.name_ko, color: GROUPS[f.taxon_group]?.color ?? "#555", ref: f.marker_type !== "korea", selected: f.id === selectedFossilId },
+          properties: { id: f.id, name: f.name_ko, color: GROUPS[f.taxon_group]?.color ?? "#555", ref: f.marker_type !== "korea", auto: f.badges.includes("auto_pbdb"), selected: f.id === selectedFossilId },
         };
       }),
     });

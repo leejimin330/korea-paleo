@@ -14,6 +14,9 @@ export const GROUPS: Record<string, { label: string; color: string }> = {
   fish: { label: "어류", color: "#6B7CF0" },
   invertebrate: { label: "무척추동물", color: "#C26AE0" },
   mammal: { label: "포유류", color: "#A9785E" },
+  reptile: { label: "기타 파충류", color: "#7A8F3A" },
+  insect: { label: "곤충·거미", color: "#2E7D9A" },
+  mollusk: { label: "연체동물", color: "#E07FA8" },
 };
 
 export const BADGES: Record<Badge, { label: string; hint: string }> = {
@@ -22,6 +25,7 @@ export const BADGES: Record<Badge, { label: string; hint: string }> = {
   east_asia_reference: { label: "동아시아 참고", hint: "한반도 밖(일본·중국)에서 나온 같은 시대 화석이에요." },
   trace_fossil: { label: "흔적 화석", hint: "몸이 아니라 발자국 같은 활동 흔적이에요." },
   disputed: { label: "논쟁 중", hint: "분류 위치에 대해 학계 의견이 갈려요." },
+  auto_pbdb: { label: "자동 수집", hint: "PBDB 산출 기록을 지점·계통별로 자동으로 묶은 마커예요. 설명도 자동 생성돼요." },
 };
 
 export const FOSSIL_TYPES: Record<Fossil["fossil_type"], string> = {
@@ -29,6 +33,7 @@ export const FOSSIL_TYPES: Record<Fossil["fossil_type"], string> = {
   egg: "알",
   skeleton: "골격",
   tooth: "이빨·미화석",
+  record: "산출 기록 묶음",
 };
 
 export function visibleFossils(fossils: Fossil[], eraId: string, filter: MarkerFilter): Fossil[] {

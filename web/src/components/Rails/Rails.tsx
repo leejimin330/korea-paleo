@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { PERIODS } from "../../lib/periods";
 import { buildRails, xPct } from "../../lib/rails";
 import { useAppStore } from "../../store/useAppStore";
@@ -19,6 +19,7 @@ export function Rails() {
   const selectTreeNode = useAppStore((s) => s.selectTreeNode);
   const selectFossil = useAppStore((s) => s.selectFossil);
 
+  const [openDot, setOpenDot] = useState<string | null>(null);
   const groups = useMemo(() => (data ? buildRails(data.tree, data.fossils, eraId) : []), [data, eraId]);
   if (!data) return null;
   const era = data.eras.find((e) => e.id === eraId);
@@ -90,17 +91,42 @@ export function Rails() {
                         ) : (
                           <span className="alive" aria-hidden="true" />
                         )}
-                        {l.dots.map((d) => (
-                          <button
-                            key={d.pct}
-                            type="button"
-                            className="fossil-dot"
-                            style={{ left: `${d.pct}%` }}
-                            title={d.title}
-                            aria-label={`화석: ${d.title}`}
-                            onClick={() => selectFossil(d.fossilIds[0])}
-                          />
-                        ))}
+                        {l.dots.map((d) => {
+                          const key = `${l.id}:${d.pct}`;
+                          const multi = d.fossilIds.length > 1;
+                          return (
+                            <span key={d.pct} className="dot-wrap" style={{ left: `${d.pct}%` }}>
+                              <button
+                                type="button"
+                                className={`fossil-dot${multi ? " multi" : ""}`}
+                                title={d.title}
+                                aria-label={multi ? `화석 ${d.fossilIds.length}곳: ${d.title}` : `화석: ${d.title}`}
+                                aria-expanded={multi ? openDot === key : undefined}
+                                onClick={() => (multi ? setOpenDot(openDot === key ? null : key) : selectFossil(d.fossilIds[0]))}
+                              >
+                                {multi && <span aria-hidden="true">{d.fossilIds.length}</span>}
+                              </button>
+                              {openDot === key && (
+                                <span className="dot-menu" role="menu">
+                                  {d.fossilIds.map((id, i) => (
+                                    <button
+                                      key={id}
+                                      type="button"
+                                      role="menuitem"
+                                      onClick={() => {
+                                        setOpenDot(null);
+                                        selectFossil(id);
+                                        document.querySelector(".stage")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                                      }}
+                                    >
+                                      {d.names[i]}
+                                    </button>
+                                  ))}
+                                </span>
+                              )}
+                            </span>
+                          );
+                        })}
                       </div>
                     </div>
                   );
