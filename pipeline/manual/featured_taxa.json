@@ -7,9 +7,10 @@
     "badges": [
       "trace_fossil"
     ],
-    "description": "한국에서 처음으로 학명이 붙은 새 발자국 화석으로, 함안층에서 보고되었습니다. 작은 물새가 호숫가 진흙 위를 걸으며 남긴 발자국으로 해석됩니다.",
+    "description": "1969년 함안층에서 처음 보고된 새 발자국 화석으로, 한국에서 학명이 붙은 첫 척추동물 발자국으로 알려져 있습니다. 작은 물새가 호숫가 진흙 위를 걸으며 남긴 것으로 해석되며, 1992년 국제 연구진이 다시 기재했습니다.",
     "sources": [
-      "Kim (1969) 원기재",
+      "Kim (1969) 지질학회지 5(4):243–258",
+      "Lockley et al. (1992) Phil. Trans. R. Soc. B 336:113–134",
       "PBDB"
     ]
   },
@@ -21,9 +22,11 @@
     "badges": [
       "trace_fossil"
     ],
-    "description": "고성 일대 진동층에서 보고된 새 발자국 화석입니다. 공룡 발자국과 같은 지층에서 함께 나와, 백악기 호숫가에 공룡과 물새가 함께 살았음을 보여줍니다.",
+    "description": "고성 일대 진동층에서 보고된 비교적 큰 새 발자국으로, 뒤쪽 발가락(엄지) 자국이 뚜렷한 것이 특징입니다. 공룡 발자국과 같은 지층에서 나와, 백악기 호숫가에 공룡과 물새가 함께 살았음을 보여줍니다.",
     "sources": [
-      "PBDB 원기재 문헌"
+      "Lockley et al. (1992) Phil. Trans. R. Soc. B 336:113–134",
+      "Lee et al. (2001) Palaeogeogr. Palaeoclimatol. Palaeoecol. 165",
+      "PBDB"
     ]
   },
   {
@@ -34,9 +37,10 @@
     "badges": [
       "trace_fossil"
     ],
-    "description": "진주층에서 보고된 작은 포유류의 발자국 화석입니다. 공룡 시대에도 작은 포유류가 이 땅에 살았다는 드문 증거입니다.",
+    "description": "진주층에서 보고된 작은 포유형류(포유류와 그 가까운 친척)의 보행렬로, 깡충깡충 뛰어서 이동한 동물의 발자국으로 해석됩니다. 백악기 지층에서 이런 '뛰는' 포유형류 보행렬이 보고된 것은 세계에서 처음이었습니다.",
     "sources": [
-      "PBDB 원기재 문헌"
+      "Kim et al. (2017) Cretaceous Research 74:188, doi:10.1016/j.cretres.2017.02.005",
+      "PBDB"
     ]
   },
   {
@@ -48,9 +52,10 @@
       "trace_fossil",
       "not_dinosaur"
     ],
-    "description": "오늘날 악어로 이어지는 계통의 파충류가 남긴 발자국 화석입니다. 공룡과 같은 시대에 물가를 걸었지만 공룡은 아닙니다.",
+    "description": "사천 자혜리 진주층에서 보고된 악어 계통 파충류의 발자국입니다. 발자국 길이가 18~24cm로 몸길이 약 3m까지의 동물로 추정되며, 앞발 자국이 전혀 없어 두 발로 걸었다는 해석이 제시되었습니다. 공룡과 같은 시대에 물가를 걸었지만 공룡은 아닙니다.",
     "sources": [
-      "PBDB 원기재 문헌"
+      "Kim et al. (2020) Scientific Reports, doi:10.1038/s41598-020-66008-7",
+      "PBDB"
     ]
   },
   {
@@ -62,9 +67,10 @@
       "trace_fossil",
       "not_dinosaur"
     ],
-    "description": "하동에서 보고된 도마뱀류의 발자국 화석입니다. 작은 도마뱀이 공룡들 사이를 누비고 다녔음을 보여줍니다.",
+    "description": "하동 하산동층에서 보고된 도마뱀 발자국으로, 보고 당시 세계에서 가장 오래된 도마뱀 발자국이었습니다. 뒷발 자국 위주로 보폭이 길고 폭이 좁게 찍혀 있어, 두 발로 달렸을 가능성이 제기되었습니다.",
     "sources": [
-      "PBDB 원기재 문헌"
+      "Scientific Reports (2018) 「Lizards ran bipedally 110 million years ago」, doi:10.1038/s41598-018-20809-z",
+      "PBDB"
     ]
   },
   {
@@ -76,20 +82,23 @@
       "trace_fossil",
       "not_dinosaur"
     ],
-    "description": "익룡이 땅 위를 네 발로 걸으며 남긴 발자국 화석입니다. 익룡은 하늘을 날던 파충류로, 공룡과 가까운 친척이지만 공룡은 아닙니다.",
+    "description": "하동 하산동층에서 보고된 익룡 발자국으로, 보고 당시 아시아에서 알려진 익룡 발자국 가운데 가장 작았습니다. 익룡은 하늘을 날던 파충류로, 공룡과 가까운 친척이지만 공룡은 아닙니다.",
     "sources": [
-      "PBDB 원기재 문헌"
+      "원기재 (2004, 하동 하산동층) — PBDB 참조",
+      "PBDB"
     ]
   },
   {
     "pbdb_name": "Juramantis jinjuensis",
     "id": "juramantis",
-    "name_ko": "진주 사마귀 화석",
+    "name_ko": "진주 쥬라만티스 (사마귀 친척)",
     "fossil_type": "skeleton",
     "badges": [],
-    "description": "진주층의 고운 셰일에서 보고된 사마귀류 곤충 화석입니다. 진주층은 백악기 곤충 화석이 풍부하게 나오는 산지로 알려져 있습니다.",
+    "description": "진주층에서 보고된 쥬라만티스과(Juramantidae) 곤충 화석으로, 사마귀와 가까운 무리로 분류됩니다. 진주층은 바퀴·딱정벌레 등 백악기 곤충 화석이 매우 풍부하게 나오는 산지이며, 군위 일대 진주층에서도 같은 종이 보고되었습니다.",
     "sources": [
-      "PBDB 원기재 문헌"
+      "Vršanský et al. (2025) Jinju cockroaches, Amba Projekty 15",
+      "Nam & Jang (2026) Biologia 81",
+      "PBDB"
     ]
   },
   {
@@ -98,9 +107,11 @@
     "name_ko": "진주 거미 화석",
     "fossil_type": "skeleton",
     "badges": [],
-    "description": "진주층에서 보고된 거미 화석입니다. 부드러운 몸을 가진 거미가 화석으로 남는 일은 드물어, 고운 호수 퇴적층이었던 진주층의 보존 환경을 보여줍니다.",
+    "description": "진주층에서 보고된 거미 화석으로, 2012년 재기재될 당시 한국에서 알려진 유일한 거미 화석이었습니다. 어린 물고기·파리 화석과 함께 발견되어 한꺼번에 죽은 사건의 흔적으로 해석되며, 이후 연구로 진주층의 거미 화석은 11점까지 늘어났습니다.",
     "sources": [
-      "PBDB 원기재 문헌"
+      "Selden et al. (2012) Journal of Paleontology 86(1)",
+      "Park, Nam & Selden (2019) Journal of Systematic Palaeontology",
+      "PBDB"
     ]
   },
   {
@@ -109,9 +120,10 @@
     "name_ko": "태백 앵무조개류 화석",
     "fossil_type": "skeleton",
     "badges": [],
-    "description": "태백 일대 오르도비스기 지층에서 보고된 두족류(앵무조개류) 화석입니다. 오늘날 오징어·문어와 같은 두족류 무리의 고생대 친척입니다.",
+    "description": "태백 일대 조선누층군에서 보고된 오르도비스기 두족류(악티노케라스목 앵무조개류) 화석입니다. 곧게 뻗은 껍데기를 가진 무리로, 오늘날 오징어·문어와 같은 두족류의 고생대 친척입니다.",
     "sources": [
-      "PBDB 원기재 문헌"
+      "Kobayashi (1977) Proc. Japan Acad. B 53:90–94",
+      "PBDB"
     ]
   },
   {
@@ -120,9 +132,10 @@
     "name_ko": "메갈로돈 이빨 화석",
     "fossil_type": "tooth",
     "badges": [],
-    "description": "포항 일대 마이오세 바다 지층에서 보고된 메갈로돈(Otodus megalodon)의 이빨 화석입니다. 메갈로돈은 지금까지 알려진 가장 큰 상어 가운데 하나로, 당시 이 바다에 대형 포식자가 살았음을 보여줍니다.",
+    "description": "포항 두호층(중기 마이오세)에서 보고된 메갈로돈(Otodus megalodon)의 이빨 화석입니다. 메갈로돈은 지금까지 알려진 가장 큰 상어 가운데 하나로, 같은 지층에서 심해 상어와 대형 청상아리류 이빨도 함께 보고되었습니다.",
     "sources": [
-      "PBDB 원기재 문헌"
+      "Malyshkina et al. (2023) Historical Biology 35:1726–1741",
+      "PBDB"
     ]
   },
   {
@@ -133,20 +146,22 @@
     "badges": [
       "species_unidentified"
     ],
-    "description": "마이오세에 널리 번성했던 작은 이빨고래 무리(켄트리오돈과)의 화석입니다. 고래는 육지 포유류가 다시 바다로 돌아간 계통으로, 오늘날 우리 바다의 상괭이와 같은 이빨고래류의 친척입니다.",
+    "description": "한국 마이오세 지층에서 처음 보고된 돌고래 화석으로, PBDB에는 마이오세에 번성한 작은 이빨고래 무리(켄트리오돈과)로 분류되어 있습니다. 고래는 육지 포유류가 다시 바다로 돌아간 계통으로, 오늘날 우리 바다의 상괭이와 같은 이빨고래류의 친척입니다.",
     "sources": [
-      "PBDB 원기재 문헌"
+      "Lim (2005) Current Science 89(6):939–940",
+      "PBDB"
     ]
   },
   {
     "pbdb_name": "Prestwichianella orientalis",
     "id": "prestwichianella",
-    "name_ko": "투구게 친척 화석",
+    "name_ko": "투구게류 화석 (유프롭스류)",
     "fossil_type": "skeleton",
     "badges": [],
-    "description": "투구게와 같은 검미류(투구게류)에 속하는 화석입니다. 투구게 무리는 고생대부터 지금까지 생김새가 크게 변하지 않아 '살아있는 화석'으로 불립니다.",
+    "description": "1933년 강원 남부 평안누층군에서 보고된 투구게류 화석입니다(보고 당시 학명 Euproops orientalis; Prestwichianella 속은 현재 Euproops에 포함하는 견해가 있습니다). 투구게 무리는 고생대부터 지금까지 생김새가 크게 변하지 않아 '살아있는 화석'으로 불립니다.",
     "sources": [
-      "PBDB 원기재 문헌"
+      "Kobayashi (1933) Japanese Journal of Geology and Geography 10:175–182",
+      "PBDB"
     ]
   }
 ]
