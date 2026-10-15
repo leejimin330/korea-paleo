@@ -17,13 +17,15 @@ def test_era_of():
     assert era_of(150, 100) is None  # 쥐라기에 걸침
     assert era_of(497, 485.4) == "paleozoic"
     assert era_of(0.126, 0.0117) == "ice_age"
+    assert era_of(298.9, 293.5) == "late_paleozoic"
+    assert era_of(15.97, 13.82) == "miocene"
 
 
 def test_aggregate_pbdb_groups_by_rounded_coords_and_era():
     recs = [
         {"lat": "34.9281", "lng": "128.0711", "max_ma": "113", "min_ma": "100.5", "identified_name": "Theropoda indet.", "class": "Reptilia"},
         {"lat": "34.9279", "lng": "128.0722", "max_ma": "113", "min_ma": "100.5", "identified_name": "Sauropoda indet.", "class": "Saurischia"},
-        {"lat": "37.0", "lng": "128.0", "max_ma": "300", "min_ma": "290"},  # 대상 시대 아님
+        {"lat": "37.0", "lng": "128.0", "max_ma": "400", "min_ma": "390"},  # 대상 시대 아님 (데본기)
         {"lat": None, "lng": "1", "max_ma": "100", "min_ma": "90"},
     ]
     pts = aggregate_pbdb(recs)

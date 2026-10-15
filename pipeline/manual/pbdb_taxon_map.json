@@ -26,7 +26,9 @@
     "Pterosauria": "pterosauria",
     "Squamata": "squamata",
     "Testudines": "testudines",
-    "Choristodera": "choristodera"
+    "Choristodera": "choristodera",
+    "Cetacea": "cetacea",
+    "Rodentia": "rodentia"
   },
   "class": {
     "Aves": "aves",
@@ -46,7 +48,10 @@
     "Cephalopoda": "cephalopoda",
     "Rostroconchia": "rostroconchia",
     "Tergomya": "mollusca",
-    "Helcionelloida": "mollusca"
+    "Helcionelloida": "mollusca",
+    "Chondrichthyes": "chondrichthyes",
+    "Osteichthyes": "teleostei",
+    "Xiphosura": "xiphosura"
   },
   "phylum": {
     "Brachiopoda": "brachiopoda",

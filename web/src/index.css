@@ -63,13 +63,16 @@ a:hover { color: var(--amber-dark); }
 .strata-periods > div.on .strata-swatch { opacity: 1; }
 .strata-periods > div.on .strata-label { color: var(--ink); font-weight: 600; }
 .strata-needle { position: absolute; top: -6px; height: 56px; width: 3px; background: var(--ink); box-shadow: 0 0 0 3px var(--paper); transition: left 0.45s cubic-bezier(.4,0,.2,1); }
-.strata-stops { position: relative; height: 84px; margin-top: 10px; }
-.strata-stops button { position: absolute; top: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px 14px; border-radius: 6px; text-align: left; background: var(--card); border: 1px solid var(--line); min-height: 44px; }
+.strata-stops { position: relative; display: grid; gap: 8px; padding-top: 30px; margin-top: 4px; }
+.strata-leaders { position: absolute; top: 0; left: 0; width: 100%; height: 30px; overflow: visible; }
+.strata-leaders line { stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 3 3; }
+.strata-leaders line.on { stroke: var(--ink); stroke-width: 2; stroke-dasharray: none; }
+.strata-stops button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px 14px; border-radius: 6px; text-align: left; background: var(--card); border: 1px solid var(--line); min-height: 44px; min-width: 0; }
 .strata-stops button:hover { border-color: var(--amber); }
 .strata-stops button.on { background: var(--amber); border-color: var(--amber); color: var(--card); }
-.stop-name { font-family: var(--serif); font-weight: 700; font-size: 16px; white-space: nowrap; }
-.stop-name em { font-family: var(--sans); font-style: normal; font-weight: 400; font-size: 12px; opacity: 0.8; }
-.stop-time { font-family: var(--mono); font-size: 12px; white-space: nowrap; opacity: 0.85; }
+.stop-name { font-family: var(--serif); font-weight: 700; font-size: 16px; line-height: 1.3; text-wrap: balance; }
+.stop-time { font-family: var(--mono); font-size: 12px; opacity: 0.85; }
+.stop-time em { font-family: var(--sans); font-style: normal; }
 .era-head { display: flex; flex-wrap: wrap; gap: 12px 40px; align-items: baseline; padding-top: 20px; border-top: 1px solid var(--line); }
 .era-head h2 { margin: 0; flex: 0 1 auto; font-family: var(--serif); font-weight: 900; font-size: clamp(28px, 3vw, 40px); line-height: 1.15; letter-spacing: -0.01em; }
 .era-head > div { flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
@@ -200,8 +203,8 @@ footer { font-size: 12px; color: var(--faint); border-top: 1px solid var(--line)
 @media (max-width: 720px) {
   .wrap { gap: 28px; padding-top: 24px; }
   .strata-label { display: none; }
-  .strata-stops { height: auto; display: flex; flex-direction: column; gap: 6px; }
-  .strata-stops button { position: static; transform: none !important; width: 100%; }
+  .strata-stops { grid-template-columns: 1fr !important; padding-top: 0; gap: 6px; }
+  .strata-leaders { display: none; }
   .map-frame { min-height: 440px; }
   .map-modes button { padding: 0 10px; font-size: 12px; }
   .specimen-title h3 { font-size: 26px; }

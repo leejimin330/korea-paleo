@@ -15,7 +15,7 @@ GPLATES = "https://gws.gplates.org"
 MODEL = "MERDITH2021"  # CC-BY 4.0, 0–1000 Ma
 
 # 시대 id → 복원 기준 연대(Ma). 빙하기(0.02 Ma)는 판 이동이 무시할 수준이라 0으로 둔다.
-ERA_TIMES = {"paleozoic": 480, "cretaceous": 100, "ice_age": 0}
+ERA_TIMES = {"paleozoic": 480, "late_paleozoic": 300, "cretaceous": 100, "miocene": 15, "ice_age": 0}
 
 
 def cached_get(url, params=None, *, method="GET", data=None, json_body=None, timeout=180):

@@ -8,7 +8,13 @@ from build_tree import read_rows
 from fetch_fossils import fetch
 from pbdb_taxa import auto_markers, featured_markers, load_map, load_places
 
-ERA_RANGES = {"paleozoic": (500, 443), "cretaceous": (145, 66), "ice_age": (0.13, 0.0117)}
+ERA_RANGES = {
+    "paleozoic": (500, 443),
+    "late_paleozoic": (358.9, 251.9),
+    "cretaceous": (145, 66),
+    "miocene": (23.03, 5.33),
+    "ice_age": (0.13, 0.0117),
+}
 
 
 def era_of(max_ma, min_ma):

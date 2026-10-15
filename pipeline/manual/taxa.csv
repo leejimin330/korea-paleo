@@ -65,3 +65,9 @@ aurelia-aurita,cnidaria,Aurelia aurita,보름달물해파리,modern,0,,0,
 porifera,animalia,Porifera,해면동물,clade,600,,0,
 crocodylomorpha,archosauria,Crocodylomorpha,악어 계통,clade,230,,0,오늘날 악어로 이어지는 계통 (한반도에는 현생 악어가 없음)
 choristodera,sauropsida,Choristodera,코리스토데라류,clade,168,11,1,파충류 안에서의 위치는 논쟁 중
+chondrichthyes,vertebrata,Chondrichthyes,연골어류(상어·가오리),clade,450,,0,
+carcharodon-carcharias,chondrichthyes,Carcharodon carcharias,백상아리,modern,0,,0,
+siniperca-scherzeri,teleostei,Siniperca scherzeri,쏘가리,modern,0,,0,
+rodentia,mammalia,Rodentia,설치류,clade,66,,0,
+tamias-sibiricus,rodentia,Tamias sibiricus,다람쥐,modern,0,,0,
+xiphosura,arthropoda,Xiphosura,투구게류,clade,480,,0,고생대부터 모습이 크게 변하지 않은 '살아있는 화석' 무리

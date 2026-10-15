@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { MarkerFilter } from "../lib/markers";
+import { josa } from "../lib/josa";
 import { indexTree, nearestFossilFor, pathToToday, type TreeIndex } from "../lib/tree";
 import type { Era, Fossil, MapMode, ModernSpecies, PbdbPoint, TreeNode } from "../types";
 
@@ -123,7 +124,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (!data || !sp) return;
     const hit = nearestFossilFor(data.tree, data.fossils, sp.tree_node_id);
     if (!hit) {
-      set({ ...clearSelection, selectedTreeNodeId: sp.tree_node_id, reverseNote: `${sp.name_ko}와 이어지는 한반도 화석을 아직 찾지 못했어요.` });
+      set({ ...clearSelection, selectedTreeNodeId: sp.tree_node_id, reverseNote: `${josa(sp.name_ko, "과", "와")} 이어지는 한반도 화석을 아직 찾지 못했어요.` });
       return;
     }
     const p = pathToToday(data.tree, hit.fossil.tree_node_id);
@@ -135,7 +136,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       selectedTreeNodeId: sp.tree_node_id,
       highlightedPath: p?.nodes ?? [],
       todayPivot: p?.pivot ?? null,
-      reverseNote: `${sp.name_ko}와 「${hit.fossil.name_ko}」는 ${shared?.name_ko ?? hit.sharedAncestor} 계통을 공유하는 친척이에요.`,
+      reverseNote: `${josa(sp.name_ko, "과", "와")} ${josa(`「${hit.fossil.name_ko}」`, "은", "는")} ${shared?.name_ko ?? hit.sharedAncestor} 계통을 공유하는 친척이에요.`,
     });
   },
 

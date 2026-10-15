@@ -33,32 +33,36 @@ export function Timeline() {
         </div>
         {era && <div className="strata-needle" aria-hidden="true" style={{ left: `calc(${xPct(era.age_ma)}% - 1.5px)` }} />}
       </div>
-      <div className="strata-stops">
-        {sorted.map((e, i) => {
-          const pos = xPct(e.age_ma);
-          // 다음 정거장이 가까우면(20% 이내) 바늘 왼쪽으로 붙여 겹치지 않게 한다.
-          const next = sorted[i + 1];
-          const crowded = next !== undefined && xPct(next.age_ma) - pos < 20;
-          const shift = i === 0 ? "translateX(-24px)" : i === sorted.length - 1 || crowded ? "translateX(-100%)" : "translateX(-50%)";
-          return (
-            <button
+      {/* 정거장은 같은 간격으로 두고, 지층 띠 위의 실제 위치까지 지시선을 긋는다 (가까운 시대끼리 겹치지 않게). */}
+      <div className="strata-stops" style={{ gridTemplateColumns: `repeat(${sorted.length}, minmax(0, 1fr))` }}>
+        <svg className="strata-leaders" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          {sorted.map((e, i) => (
+            <line
               key={e.id}
-              type="button"
-              aria-pressed={e.id === selected}
+              x1={xPct(e.age_ma)}
+              y1={0}
+              x2={((i + 0.5) / sorted.length) * 100}
+              y2={100}
               className={e.id === selected ? "on" : ""}
-              style={{ left: `${Math.max(pos, 0)}%`, transform: shift }}
-              onClick={() => selectEra(e.id)}
-            >
-              <span className="stop-name">
-                {e.name}
-                {e.status === "preview" && <em> · 미리보기</em>}
-              </span>
-              <span className="stop-time">
-                {formatAgoKo(e.age_ma)} · {formatMa(e.age_ma)}
-              </span>
-            </button>
-          );
-        })}
+              vectorEffect="non-scaling-stroke"
+            />
+          ))}
+        </svg>
+        {sorted.map((e) => (
+          <button
+            key={e.id}
+            type="button"
+            aria-pressed={e.id === selected}
+            className={e.id === selected ? "on" : ""}
+            onClick={() => selectEra(e.id)}
+          >
+            <span className="stop-name">{e.name}</span>
+            <span className="stop-time">
+              {formatAgoKo(e.age_ma)} · {formatMa(e.age_ma)}
+              {e.status === "preview" && <em> · 미리보기</em>}
+            </span>
+          </button>
+        ))}
       </div>
       {era && (
         <div className="era-head">
