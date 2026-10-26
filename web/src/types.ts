@@ -89,3 +89,14 @@ export type Species = {
 };
 
 export type Page = "home" | "era" | "timeline";
+
+/** 위키미디어 공용 이미지 (자유 라이선스). */
+export type ImageInfo = {
+  thumb: string;
+  width: number | null;
+  height: number | null;
+  page: string;
+  file_page: string;
+  artist: string;
+  license: string;
+};

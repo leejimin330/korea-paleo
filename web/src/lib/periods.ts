@@ -25,3 +25,7 @@ export const ERAS_GEO = [
 export function periodAt(ma: number): Period | undefined {
   return PERIODS.find((p) => ma <= p.from && ma >= p.to);
 }
+
+/** 시대 띠의 시간축: 캄브리아기 시작(541 Ma) → 오늘, 선형. 0~100(%). */
+export const AXIS_MA = 541;
+export const xPct = (ma: number) => ((AXIS_MA - Math.min(ma, AXIS_MA)) / AXIS_MA) * 100;

@@ -2,6 +2,7 @@ import { whereLabel } from "../../lib/catalog";
 import { BADGES, FOSSIL_TYPES, formatMa, GROUPS } from "../../lib/markers";
 import { ancestorsOf, pathToToday } from "../../lib/tree";
 import { useAppStore } from "../../store/useAppStore";
+import { Photo } from "../Photo/Photo";
 import type { Fossil } from "../../types";
 
 const FACTS = [
@@ -60,7 +61,7 @@ function TaxaList({ fossil }: { fossil: Fossil }) {
   );
 }
 
-/** 표본 카드: 선택된 화석(또는 계통 노드)의 정보와 오늘로 이어보기. */
+/** 표본 카드: 선택된 화석(또는 계통 노드)의 사진·정보와 진화 경로로 가는 버튼. */
 export function SpeciesCard() {
   const data = useAppStore((s) => s.data);
   const eraId = useAppStore((s) => s.selectedEraId);
@@ -86,7 +87,7 @@ export function SpeciesCard() {
   const onConnect = () => {
     if (!startNodeId) return;
     connectToToday(startNodeId);
-    document.getElementById("rails")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById("lineage")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
@@ -101,6 +102,9 @@ export function SpeciesCard() {
       ) : (
         <div className="specimen-body">
           {reverseNote && <p className="banner">{reverseNote}</p>}
+          {startNodeId && (
+            <Photo sci={species?.scientific_name ?? fossil?.scientific_name ?? (fossil ? null : (node?.name ?? null))} nodeId={startNodeId} size="card" alt={`${species?.name_ko ?? fossil?.name_ko ?? node?.name_ko} 사진`} />
+          )}
           <div className="specimen-title">
             <h3>{species?.name_ko ?? fossil?.name_ko ?? node?.name_ko}</h3>
             {(species?.scientific_name ?? fossil?.scientific_name ?? (fossil ? null : node?.name)) && (
@@ -192,7 +196,7 @@ export function SpeciesCard() {
                 <span>직계 조상이 아니라, 공통 조상에서 갈라진 친척 관계예요.</span>
               </div>
               <button type="button" className="primary" onClick={onConnect}>
-                오늘로 이어보기
+                진화 경로 보기
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>

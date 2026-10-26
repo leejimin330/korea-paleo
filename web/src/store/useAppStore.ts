@@ -4,7 +4,7 @@ import type { MarkerFilter } from "../lib/markers";
 import { formatRoute, parseHash, type Route } from "../lib/route";
 import { josa } from "../lib/josa";
 import { indexTree, nearestFossilFor, pathToToday, type TreeIndex } from "../lib/tree";
-import type { Era, Fossil, MapMode, ModernSpecies, Page, PbdbPoint, Species, TreeNode } from "../types";
+import type { Era, Fossil, ImageInfo, MapMode, ModernSpecies, Page, PbdbPoint, Species, TreeNode } from "../types";
 
 export type AppData = {
   eras: Era[];
@@ -13,6 +13,7 @@ export type AppData = {
   modern: ModernSpecies[];
   pbdb: PbdbPoint[];
   species: Species[];
+  images: Record<string, ImageInfo>;
 };
 
 export type AppState = {
@@ -90,13 +91,14 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   load: async () => {
     try {
-      const [eras, fossils, tree, modern, pbdb, species] = await Promise.all([
+      const [eras, fossils, tree, modern, pbdb, species, images] = await Promise.all([
         getJson<Era[]>("eras.json"),
         getJson<Fossil[]>("fossils.json"),
         getJson<TreeNode>("tree.json"),
         getJson<ModernSpecies[]>("modern_species.json"),
         getJson<PbdbPoint[]>("pbdb_points.json"),
         getJson<Species[]>("species.json"),
+        getJson<Record<string, ImageInfo>>("images.json"),
       ]);
       // 주소에 없는 시대 id가 오면 메인으로 돌린다.
       const { page, selectedEraId } = get();
@@ -104,7 +106,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         set({ page: "home", selectedEraId: "cretaceous" });
         history.replaceState(null, "", formatRoute({ page: "home" }));
       }
-      set({ data: { eras, fossils, tree: indexTree(tree), modern, pbdb, species } });
+      set({ data: { eras, fossils, tree: indexTree(tree), modern, pbdb, species, images } });
     } catch (e) {
       set({ loadError: e instanceof Error ? e.message : String(e) });
     }

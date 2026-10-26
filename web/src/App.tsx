@@ -3,8 +3,8 @@ import { Catalog } from "./components/Catalog/Catalog";
 import { ChronologyPage } from "./components/Chronology/ChronologyPage";
 import { EraNav } from "./components/EraNav/EraNav";
 import { Home } from "./components/Home/Home";
+import { Lineage } from "./components/Lineage/Lineage";
 import { MapView } from "./components/MapView/MapView";
-import { Rails } from "./components/Rails/Rails";
 import { SpeciesCard } from "./components/SpeciesCard/SpeciesCard";
 import { TopBar } from "./components/TopBar/TopBar";
 import { formatRoute } from "./lib/route";
@@ -19,7 +19,7 @@ function EraPage() {
         <MapView />
         <SpeciesCard />
       </section>
-      <Rails />
+      <Lineage />
     </main>
   );
 }

@@ -14,11 +14,14 @@ WEB_DATA = ROOT / "web" / "public" / "data"
 GPLATES = "https://gws.gplates.org"
 MODEL = "MERDITH2021"  # CC-BY 4.0, 0–1000 Ma
 
+# 위키미디어 API는 연락처가 담긴 User-Agent를 요구한다.
+USER_AGENT = "korea-paleo/0.1 (https://github.com/leejimin330/korea-paleo; educational static site)"
+
 # 시대 id → 복원 기준 연대(Ma). 빙하기(0.02 Ma)는 판 이동이 무시할 수준이라 0으로 둔다.
 ERA_TIMES = {"paleozoic": 480, "late_paleozoic": 300, "cretaceous": 100, "miocene": 15, "ice_age": 0}
 
 
-def cached_get(url, params=None, *, method="GET", data=None, json_body=None, timeout=180):
+def cached_get(url, params=None, *, method="GET", data=None, json_body=None, timeout=180, headers=None):
     """같은 요청은 data/raw/http_cache 에 저장해 재사용한다 (외부 API를 반복 호출하지 않기 위해)."""
     RAW.mkdir(parents=True, exist_ok=True)
     key_src = json.dumps([method, url, params, data, json_body], sort_keys=True, ensure_ascii=False)
@@ -28,9 +31,9 @@ def cached_get(url, params=None, *, method="GET", data=None, json_body=None, tim
         return json.loads(path.read_text(encoding="utf-8"))
     path.parent.mkdir(parents=True, exist_ok=True)
     if method == "GET":
-        r = requests.get(url, params=params, timeout=timeout)
+        r = requests.get(url, params=params, timeout=timeout, headers=headers)
     else:
-        r = requests.post(url, params=params, data=data, json=json_body, timeout=timeout)
+        r = requests.post(url, params=params, data=data, json=json_body, timeout=timeout, headers=headers)
     r.raise_for_status()
     body = r.json()
     path.write_text(json.dumps(body, ensure_ascii=False), encoding="utf-8")

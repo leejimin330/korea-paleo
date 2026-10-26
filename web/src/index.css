@@ -141,7 +141,7 @@ a:hover { color: var(--amber-dark); }
 
 /* ── 지도 + 표본 ── */
 .era-page { display: flex; flex-direction: column; gap: 40px; }
-.catalog, .stage { scroll-margin-top: 16px; }
+.catalog, .stage, .lineage { scroll-margin-top: 16px; }
 .stage { display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch; }
 .map-view { flex: 999 1 620px; min-width: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
 .map-frame { position: relative; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #f7e7cc; flex: 1; min-height: 560px; }
@@ -210,57 +210,6 @@ a:hover { color: var(--amber-dark); }
 .facts summary span { font-family: var(--mono); color: var(--muted); font-weight: 400; }
 .facts ul { margin: 0; padding: 0 24px 18px 40px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--muted); }
 
-/* ── 계통 레일 ── */
-.rails { display: flex; flex-direction: column; gap: 18px; scroll-margin-top: 16px; }
-.rails-head { display: flex; flex-wrap: wrap; gap: 12px 32px; align-items: baseline; justify-content: space-between; }
-.rails-head h2 { margin: 0; font-family: var(--serif); font-weight: 900; font-size: 32px; }
-.rails-head p { margin: 4px 0 0; color: var(--muted); font-size: 14px; max-width: 720px; }
-.rails-legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 12px; color: var(--muted); align-items: center; }
-.rails-legend span { display: flex; align-items: center; gap: 8px; }
-.rails-legend b { color: var(--ink); }
-.lg-thick { width: 22px; height: 6px; border-radius: 3px; background: #a9875a; }
-.lg-dash { width: 22px; border-top: 2px dashed #a9875a; }
-.lg-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 2px var(--paper); }
-.rails-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
-.rails-inner { min-width: 900px; padding: 20px 24px 24px; }
-.rails-row { display: grid; grid-template-columns: 200px 1fr; column-gap: 20px; align-items: center; }
-.rails-axis { margin-bottom: 8px; }
-.rails-periods { display: flex; gap: 1px; height: 6px; }
-.rails-periods > div { flex-basis: 0; min-width: 3px; opacity: 0.7; }
-.rails-ticks { position: relative; height: 18px; margin-top: 6px; font-family: var(--mono); font-size: 11px; color: var(--muted); }
-.rails-ticks span { position: absolute; white-space: nowrap; }
-.tick-center { transform: translateX(-50%); }
-.tick-end { transform: translateX(-100%); }
-.rails-body { position: relative; }
-.rails-guides { position: absolute; top: 0; bottom: 0; left: 220px; right: 0; pointer-events: none; }
-.rails-guides .guide { position: absolute; top: 0; bottom: 0; border-left: 1px dashed var(--line); }
-.rails-guides .band { position: absolute; top: 0; bottom: 0; background: rgba(252, 225, 138, 0.45); border-left: 1px solid #cda56d; border-right: 1px solid #cda56d; transition: left 0.45s, width 0.45s; }
-.rails-group { position: relative; padding: 14px 0 4px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; color: var(--faint); border-bottom: 1px solid #ead3ae; }
-.lane { height: 30px; position: relative; }
-.lane-name { display: flex; align-items: baseline; gap: 8px; background: transparent; border: 0; padding: 0; text-align: left; min-width: 0; min-height: 30px; align-items: center; }
-.lane-name .nm { font-size: 14px; white-space: nowrap; }
-.lane-name .cl { font-size: 11px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.lane-name:hover .nm { color: var(--amber); }
-.lane-track { position: relative; height: 30px; }
-.lane .thin { position: absolute; top: 14px; height: 0; border-top: 2px solid #d9be90; }
-.lane .thin.dashed { border-top-style: dashed; }
-.lane .thick { position: absolute; top: 12px; height: 6px; border-radius: 3px; background: #a9875a; }
-.lane .thick.dashed { background: repeating-linear-gradient(90deg, #a9875a 0 6px, transparent 6px 10px); }
-.lane .alive { position: absolute; top: 10px; right: -5px; width: 10px; height: 10px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 2px var(--card); }
-.lane .dagger { position: absolute; top: 3px; font-weight: 600; font-size: 14px; }
-.lane .dot-wrap { position: absolute; top: 7px; z-index: 1; }
-.lane .fossil-dot { display: grid; place-items: center; width: 16px; height: 16px; margin-left: -8px; padding: 0; border-radius: 50%; background: var(--amber); border: 2px solid var(--card); color: var(--card); font-family: var(--mono); font-size: 9px; line-height: 1; }
-.lane .fossil-dot.multi { width: 20px; height: 20px; margin: -2px 0 0 -10px; }
-.lane .fossil-dot:hover { transform: scale(1.15); }
-.dot-menu { position: absolute; top: 24px; left: -12px; z-index: 5; display: flex; flex-direction: column; gap: 2px; padding: 6px; min-width: 200px; background: var(--card); border: 1px solid var(--line-strong); border-radius: 6px; box-shadow: 0 6px 20px rgba(74, 46, 26, 0.18); }
-.dot-menu button { text-align: left; background: transparent; border: 0; border-radius: 4px; padding: 6px 8px; font-size: 13px; white-space: nowrap; }
-.dot-menu button:hover { background: var(--sand); color: var(--amber); }
-.lane.on .nm { color: var(--amber); font-weight: 600; }
-.lane.on .thin { border-top-color: var(--amber); }
-.lane.on .thick { background: var(--amber); box-shadow: 0 0 12px rgba(252, 225, 138, 0.9); }
-.lane.on .thick.dashed { background: repeating-linear-gradient(90deg, var(--amber) 0 6px, transparent 6px 10px); }
-.lane.on .alive { background: var(--amber); }
-
 /* ── 생물 도감 ── */
 .catalog { display: flex; flex-direction: column; gap: 18px; }
 .catalog-filters { display: flex; flex-direction: column; gap: 10px; }
@@ -315,6 +264,46 @@ a:hover { color: var(--amber-dark); }
 .chrono-table tr.extinction td { padding: 6px 14px; background: #f7dccd; color: #8a2f10; font-size: 13px; font-weight: 600; }
 .chrono-table tr.extinction span { margin-right: 4px; }
 
+/* ── 사진 ── */
+.photo { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.photo img { width: 100%; height: auto; max-height: 280px; object-fit: cover; border-radius: 6px; background: var(--sand); }
+.photo figcaption { font-size: 11px; line-height: 1.5; color: var(--faint); }
+.photo figcaption a { color: var(--muted); }
+.photo figcaption strong { font-weight: 600; color: var(--muted); }
+.photo-thumb { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 3px; background: var(--sand); }
+.photo-thumb.empty { background: repeating-linear-gradient(135deg, var(--sand) 0 6px, transparent 6px 12px); }
+.photo-thumb-wrap { position: relative; display: block; width: 100%; }
+.photo-tag { position: absolute; left: 4px; bottom: 4px; max-width: calc(100% - 8px); padding: 1px 6px; border-radius: 3px; background: rgba(74, 46, 26, 0.78); color: var(--paper); font-size: 10px; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.label .photo-thumb-wrap, .label .photo-thumb.empty { margin-bottom: 8px; }
+
+/* ── 진화 경로 ── */
+.lineage { display: flex; flex-direction: column; gap: 20px; }
+.path { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.path > li { position: relative; display: grid; grid-template-columns: 120px 24px minmax(0, 1fr); column-gap: 12px; align-items: start; padding-bottom: 18px; }
+.path > li::before { content: ""; position: absolute; left: 143px; top: 10px; bottom: -10px; border-left: 2px solid var(--line-strong); }
+.path > li:last-child::before { display: none; }
+.path-time { padding-top: 1px; text-align: right; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.path-mark { position: relative; z-index: 1; justify-self: center; margin-top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--paper); border: 2px solid var(--line-strong); }
+.path-clade p { margin: 0; font-size: 14px; color: var(--muted); }
+.path-clade strong { color: var(--ink); font-weight: 600; }
+.path-era .path-mark, .path-today .path-mark { width: 16px; height: 16px; margin-top: 3px; background: var(--amber); border-color: var(--amber); }
+.path-era.none .path-mark { background: var(--paper); border-color: var(--line-strong); }
+.path-today .path-mark { background: var(--ink); border-color: var(--ink); }
+.path-body { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
+.path-era.current .path-body { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber); }
+.path-era.none .path-body { background: transparent; border-style: dashed; padding: 10px 16px; }
+.path-body h3 { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; font-family: var(--serif); font-weight: 700; font-size: 18px; }
+.path-body h3 span { font-family: var(--sans); font-weight: 400; font-size: 13px; color: var(--muted); }
+.path-body > p { margin: 0; font-size: 13px; }
+.kin { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.kin button, .kin-static { width: 100%; display: flex; flex-direction: column; gap: 6px; padding: 8px; text-align: left; background: var(--paper); border: 1px solid var(--line); border-radius: 6px; }
+.kin button:hover { border-color: var(--amber); }
+.kin button.on { border-color: var(--amber); background: var(--glow); }
+.kin-text { display: flex; flex-direction: column; }
+.kin-name { font-family: var(--serif); font-weight: 700; font-size: 14px; line-height: 1.3; }
+.kin-meta { font-size: 12px; color: var(--muted); }
+.kin-more { align-self: center; font-size: 13px; color: var(--muted); padding: 8px; }
+
 footer { font-size: 12px; color: var(--faint); border-top: 1px solid var(--line); padding-top: 16px; }
 
 @media (max-width: 860px) {
@@ -333,6 +322,12 @@ footer { font-size: 12px; color: var(--faint); border-top: 1px solid var(--line)
   .scale-link { width: 100%; margin-left: 0; }
 }
 @media (max-width: 720px) {
+  .path > li { grid-template-columns: 18px minmax(0, 1fr); column-gap: 10px; }
+  .path > li::before { left: 8px; }
+  .path-time { grid-column: 2; grid-row: 1; text-align: left; }
+  .path-mark { grid-column: 1; grid-row: 1 / span 2; }
+  .path-clade p, .path-body { grid-column: 2; }
+  .kin { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .wrap { gap: 28px; padding-top: 24px; }
   .column { grid-template-columns: 1fr; }
   .column-axis { display: none; }
@@ -349,7 +344,7 @@ footer { font-size: 12px; color: var(--faint); border-top: 1px solid var(--line)
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .strata-needle, .rails-guides .band, .strata-swatch, .layer { transition: none; }
+  .strata-needle, .strata-swatch, .layer { transition: none; }
 }
 
 /* PBDB 분류군 목록 */

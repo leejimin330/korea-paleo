@@ -119,3 +119,13 @@ def test_built_species_link_to_markers_and_have_names():
         assert s["tree_node_id"] in ids, s["id"]
         assert s["name_ko"] and s["name_ko"] != "?", s["id"]
         assert s["region"] in ("korea", "nearby")
+
+
+def test_image_license_filter_and_html_strip():
+    from fetch_images import LICENSE_OK, strip_html
+
+    for ok in ("CC BY-SA 4.0", "CC BY 2.0", "CC0", "Public domain"):
+        assert LICENSE_OK.match(ok), ok
+    for bad in ("Fair use", "All rights reserved", ""):
+        assert not LICENSE_OK.match(bad), bad
+    assert strip_html('<a href="x">Kim  &amp; Lee</a>') == "Kim & Lee"

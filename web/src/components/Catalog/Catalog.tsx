@@ -2,6 +2,7 @@ import { useMemo, useState, type CSSProperties } from "react";
 import { eraSpecies, filterSpecies, groupCounts, whereLabel, type Region } from "../../lib/catalog";
 import { GROUPS } from "../../lib/markers";
 import { useAppStore } from "../../store/useAppStore";
+import { Photo } from "../Photo/Photo";
 
 /** 처음에는 이만큼만 보이고, 나머지는 "모두 보기"로 펼친다 (지도까지 너무 멀어지지 않게). */
 const COLLAPSED = 24;
@@ -91,6 +92,7 @@ export function Catalog() {
                 aria-pressed={selected === s.id}
                 onClick={() => open(s.id)}
               >
+                <Photo sci={s.scientific_name} nodeId={s.tree_node_id} size="thumb" alt="" />
                 <span className="label-group">{GROUPS[s.taxon_group]?.label ?? s.taxon_group}</span>
                 <span className="label-name">{s.name_ko}</span>
                 {s.scientific_name && <i className="label-sci">{s.scientific_name}</i>}

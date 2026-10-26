@@ -1,6 +1,5 @@
-import { periodAt, PERIODS, ERAS_GEO } from "../../lib/periods";
+import { periodAt, PERIODS, ERAS_GEO, xPct } from "../../lib/periods";
 import { formatAgoKo, formatMa } from "../../lib/markers";
-import { xPct } from "../../lib/rails";
 import { useAppStore } from "../../store/useAppStore";
 
 const jump = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -78,7 +77,7 @@ export function EraNav() {
             {/* 주소의 #은 화면 이동에 쓰므로, 같은 화면 안 이동은 버튼으로 스크롤한다. */}
             <button type="button" onClick={() => jump("catalog")}>생물 도감 {count}종</button>
             <button type="button" onClick={() => jump("stage")}>화석 지도</button>
-            <button type="button" onClick={() => jump("rails")}>계통 레일</button>
+            <button type="button" onClick={() => jump("lineage")}>진화 경로</button>
           </nav>
         </div>
       )}

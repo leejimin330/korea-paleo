@@ -5,6 +5,7 @@ import shutil
 import build_bathymetry
 import build_fossils
 import build_tree
+import fetch_images
 import fetch_paleogeo
 from common import MANUAL, PROCESSED, WEB_DATA, write_json
 
@@ -14,6 +15,7 @@ def main():
     build_fossils.main()
     build_tree.main()
     build_bathymetry.main()
+    fetch_images.main()
     write_json(PROCESSED / "eras.json", json.loads((MANUAL / "eras.json").read_text(encoding="utf-8")))
     shutil.copy(MANUAL / "environments.geojson", PROCESSED / "environments.geojson")
     if WEB_DATA.exists():
