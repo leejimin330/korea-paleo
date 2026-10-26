@@ -7,7 +7,7 @@ TNRS_URL = "https://api.opentreeoflife.org/v3/tnrs/match_names"
 
 # 현생종 그룹 라벨: 가장 가까운 조상 id 기준
 GROUP_BY_ANCESTOR = {
-    "aves": "bird", "mammalia": "mammal", "actinopterygii": "fish", "squamata": "reptile",
+    "aves": "bird", "mammalia": "mammal", "actinopterygii": "fish", "chondrichthyes": "fish", "amphibia": "amphibian", "squamata": "reptile",
     "testudines": "reptile", "arthropoda": "invertebrate", "brachiopoda": "invertebrate",
     "mollusca": "invertebrate", "cnidaria": "invertebrate", "echinodermata": "invertebrate", "insecta": "insect", "arachnida": "insect",
 }

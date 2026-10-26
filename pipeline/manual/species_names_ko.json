@@ -1,0 +1,651 @@
+{
+ "_comment": "PBDB 속(genus) → 한국어 이름(ko)과 선택 설명(note). 오늘날 한국어 이름이 있는 속은 'OO 무리', 나머지는 학명 음차. note는 확실한 사실만 쓴다.",
+ "Pseudagnostus": {
+  "ko": "프세우다그노스투스"
+ },
+ "Blackwelderia": {
+  "ko": "블랙웰데리아"
+ },
+ "Proceratopyge": {
+  "ko": "프로케라토피게"
+ },
+ "Micragnostus": {
+  "ko": "미크라그노스투스"
+ },
+ "Homagnostus": {
+  "ko": "호마그노스투스"
+ },
+ "Eurudagnostus": {
+  "ko": "에우루다그노스투스"
+ },
+ "Orthis": {
+  "ko": "오르티스"
+ },
+ "Lingulella": {
+  "ko": "링굴렐라",
+  "note": "껍데기 모양이 오늘날의 개맛과 닮은 완족동물이에요."
+ },
+ "Rafinesquina": {
+  "ko": "라피네스퀴나"
+ },
+ "Eoorthis": {
+  "ko": "에오오르티스"
+ },
+ "Huenella": {
+  "ko": "휴넬라"
+ },
+ "Sinorthis": {
+  "ko": "시노르티스"
+ },
+ "Lophospira": {
+  "ko": "로포스피라"
+ },
+ "Donaldiella": {
+  "ko": "도날디엘라"
+ },
+ "Scalites": {
+  "ko": "스칼리테스"
+ },
+ "Nicholsonella": {
+  "ko": "니콜소넬라"
+ },
+ "Diplograptus": {
+  "ko": "디플로그랍투스"
+ },
+ "Didymograptus": {
+  "ko": "디디모그랍투스",
+  "note": "두 갈래로 갈라진 모양의 필석이에요."
+ },
+ "Dictyonema": {
+  "ko": "딕티오네마"
+ },
+ "Glyptograptus": {
+  "ko": "글립토그랍투스"
+ },
+ "Manchuroceras": {
+  "ko": "만추로케라스"
+ },
+ "Michelinoceras": {
+  "ko": "미켈리노케라스",
+  "note": "곧은 원뿔 모양 껍데기를 가진 두족류예요."
+ },
+ "Ormoceras": {
+  "ko": "오르모케라스"
+ },
+ "Tofangoceras": {
+  "ko": "토팡고케라스"
+ },
+ "Armenoceras": {
+  "ko": "아르메노케라스"
+ },
+ "Kotoceras": {
+  "ko": "코토케라스"
+ },
+ "Ctenodonta": {
+  "ko": "크테노돈타"
+ },
+ "Modiolopsis": {
+  "ko": "모디올롭시스"
+ },
+ "Primitia": {
+  "ko": "프리미티아"
+ },
+ "Aparchites": {
+  "ko": "아파르키테스"
+ },
+ "Cordylodus": {
+  "ko": "코르딜로두스"
+ },
+ "Teridontus": {
+  "ko": "테리돈투스"
+ },
+ "Prooneotodus": {
+  "ko": "프로오네오토두스"
+ },
+ "Acodus": {
+  "ko": "아코두스"
+ },
+ "Scolopodus": {
+  "ko": "스콜로포두스"
+ },
+ "Drepanodus": {
+  "ko": "드레파노두스"
+ },
+ "Sokkaejaecystis": {
+  "ko": "석개재키스티스"
+ },
+ "Archaeoscyphia": {
+  "ko": "아르카이오스키피아"
+ },
+ "Labechia": {
+  "ko": "라베키아"
+ },
+ "Pygmaeoconus": {
+  "ko": "피그마에오코누스"
+ },
+ "Scaevogyra": {
+  "ko": "스카에보기라"
+ },
+ "Eopteria": {
+  "ko": "에옵테리아"
+ },
+ "Wanwanella": {
+  "ko": "완완넬라"
+ },
+ "Sphenothallus": {
+  "ko": "스페노탈루스"
+ },
+ "Arachnastraea": {
+  "ko": "아라크나스트라에아"
+ },
+ "Diphyphyllum": {
+  "ko": "디피필룸"
+ },
+ "Polythecalis": {
+  "ko": "폴리테칼리스"
+ },
+ "Waagenophyllum": {
+  "ko": "바게노필룸"
+ },
+ "Yatsengia": {
+  "ko": "야첸기아"
+ },
+ "Amblysiphonella": {
+  "ko": "암블리시포넬라"
+ },
+ "Colospongia": {
+  "ko": "콜로스폰기아"
+ },
+ "Fistulipora": {
+  "ko": "피스툴리포라"
+ },
+ "Dyscritella": {
+  "ko": "디스크리텔라"
+ },
+ "Streblotrypa": {
+  "ko": "스트레블로트리파"
+ },
+ "Neochonetes": {
+  "ko": "네오코네테스"
+ },
+ "Derbyia": {
+  "ko": "더비아"
+ },
+ "Hustedia": {
+  "ko": "허스테디아"
+ },
+ "Stenoscisma": {
+  "ko": "스테노스키스마"
+ },
+ "Meekella": {
+  "ko": "미켈라"
+ },
+ "Martinia": {
+  "ko": "마르티니아"
+ },
+ "Aviculopecten": {
+  "ko": "아비쿨로펙텐"
+ },
+ "Astartella": {
+  "ko": "아스타르텔라"
+ },
+ "Carbonicola": {
+  "ko": "카르보니콜라"
+ },
+ "Miocidaris": {
+  "ko": "미오키다리스"
+ },
+ "Pseudogastrioceras": {
+  "ko": "프세우도가스트리오케라스"
+ },
+ "Xenodiscus": {
+  "ko": "크세노디스쿠스"
+ },
+ "Huananoceras": {
+  "ko": "화난오케라스"
+ },
+ "Tapashanites": {
+  "ko": "타파샤니테스"
+ },
+ "Streptognathodus": {
+  "ko": "스트렙토그나토두스"
+ },
+ "Hindeodus": {
+  "ko": "힌데오두스",
+  "note": "이 속의 한 종(Hindeodus parvus)이 고생대와 중생대의 경계를 정하는 기준 화석으로 쓰여요."
+ },
+ "Naticopsis": {
+  "ko": "나티콥시스"
+ },
+ "Palaeostylus": {
+  "ko": "팔라에오스틸루스"
+ },
+ "Euomphalus": {
+  "ko": "에우옴팔루스"
+ },
+ "Pseudophillipsia": {
+  "ko": "프세우도필립시아",
+  "note": "삼엽충이 사라지기 직전인 페름기까지 살았던 삼엽충이에요."
+ },
+ "Ampulliglabella": {
+  "ko": "암풀리글라벨라"
+ },
+ "Cladodus": {
+  "ko": "클라도두스"
+ },
+ "Cyrtonodus": {
+  "ko": "키르토노두스"
+ },
+ "Glikmanius": {
+  "ko": "글리크마니우스"
+ },
+ "Neopetalodus": {
+  "ko": "네오페탈로두스"
+ },
+ "Bairdia": {
+  "ko": "베어디아"
+ },
+ "Microcheilinella": {
+  "ko": "미크로케일리넬라"
+ },
+ "Bairdiacypris": {
+  "ko": "베어디아키프리스"
+ },
+ "Sinoagetopanorpa": {
+  "ko": "시노아게토파노르파"
+ },
+ "Mesochorista": {
+  "ko": "메소코리스타"
+ },
+ "Permoagetopanorpa": {
+  "ko": "페르모아게토파노르파"
+ },
+ "Prodentalium": {
+  "ko": "프로덴탈리움"
+ },
+ "Changxingia": {
+  "ko": "창싱기아"
+ },
+ "Sinoplatysomus": {
+  "ko": "시노플라티소무스"
+ },
+ "Geralinura": {
+  "ko": "게랄리누라",
+  "note": "오늘날의 채찍전갈과 같은 무리예요."
+ },
+ "Arceodomus": {
+  "ko": "아르케오도무스"
+ },
+ "Nephropsis": {
+  "ko": "네프롭시스"
+ },
+ "Trigonioides": {
+  "ko": "트리고니오이데스",
+  "note": "경상분지의 호수 퇴적층에서 흔히 나오는 민물 조개예요."
+ },
+ "Plicatounio": {
+  "ko": "플리카토우니오"
+ },
+ "Viviparus": {
+  "ko": "비비파루스",
+  "note": "오늘날의 논우렁이와 같은 논우렁이과 고둥이에요."
+ },
+ "Yezoites": {
+  "ko": "예조이테스"
+ },
+ "Huaxiapterus": {
+  "ko": "화샤프테루스"
+ },
+ "Gobiconodon": {
+  "ko": "고비코노돈"
+ },
+ "Minisauripus": {
+  "ko": "미니사우리푸스"
+ },
+ "Doolysaurus": {
+  "ko": "둘리사우루스",
+  "note": "만화 주인공 '둘리'에서 이름을 딴 한국 공룡이에요."
+ },
+ "Aquatilavipes": {
+  "ko": "아쿠아틸라비페스"
+ },
+ "Ignotornis": {
+  "ko": "이그노토르니스"
+ },
+ "Eugyra": {
+  "ko": "에우기라"
+ },
+ "Coptoclava": {
+  "ko": "콥토클라바"
+ },
+ "Stellularis": {
+  "ko": "스텔룰라리스"
+ },
+ "Mesoraphidia": {
+  "ko": "메소라피디아"
+ },
+ "Wakinoichthys": {
+  "ko": "와키노이크티스"
+ },
+ "Asprosaurus": {
+  "ko": "아스프로사우루스"
+ },
+ "Cypridea": {
+  "ko": "키프리데아"
+ },
+ "Brontopodus": {
+  "ko": "브론토포두스",
+  "note": "용각류 공룡 발자국에 붙이는 이름이에요."
+ },
+ "Grallator": {
+  "ko": "그랄라토르",
+  "note": "작은 수각류 공룡 발자국에 붙이는 이름이에요."
+ },
+ "Byeoljubuchelys": {
+  "ko": "별주부켈리스",
+  "note": "옛이야기 「별주부전」의 '별주부'에서 이름을 딴 거북이에요."
+ },
+ "Dromaeosauripus": {
+  "ko": "드로마에오사우리푸스"
+ },
+ "Laiyangpus": {
+  "ko": "라이양푸스"
+ },
+ "Novapes": {
+  "ko": "노바페스"
+ },
+ "Cretalamna": {
+  "ko": "크레탈람나"
+ },
+ "Protodictyoolithus": {
+  "ko": "프로토딕티오올리투스"
+ },
+ "Archaeoniscus": {
+  "ko": "아르카이오니스쿠스"
+ },
+ "Isocrinus": {
+  "ko": "이소크리누스",
+  "note": "바다나리(갯나리) 무리예요."
+ },
+ "Helioceratops": {
+  "ko": "헬리오케라톱스"
+ },
+ "Liaobatrachus": {
+  "ko": "랴오바트라쿠스"
+ },
+ "Koreamegops": {
+  "ko": "코레아메곱스"
+ },
+ "Aturia": {
+  "ko": "아투리아"
+ },
+ "Turritella": {
+  "ko": "투리텔라"
+ },
+ "Neverita": {
+  "ko": "네베리타"
+ },
+ "Nassarius": {
+  "ko": "나사리우스"
+ },
+ "Squiresica": {
+  "ko": "스콰이레시카"
+ },
+ "Dosinia": {
+  "ko": "도시니아"
+ },
+ "Macoma": {
+  "ko": "마코마"
+ },
+ "Gomphotherium": {
+  "ko": "곰포테리움",
+  "note": "코가 긴 장비류(코끼리 무리)로, 위턱과 아래턱에 모두 엄니가 있었어요."
+ },
+ "Rhinoceros": {
+  "ko": "코뿔소 무리",
+  "note": "오늘날의 인도코뿔소와 같은 속이에요."
+ },
+ "Desmostylus": {
+  "ko": "데스모스틸루스",
+  "note": "기둥을 묶어 놓은 듯한 어금니를 가진 멸종 바다 포유류예요."
+ },
+ "Paleoparadoxia": {
+  "ko": "팔레오파라독시아"
+ },
+ "Copemys": {
+  "ko": "코페미스"
+ },
+ "Spermophilinus": {
+  "ko": "스페르모필리누스"
+ },
+ "Neocometes": {
+  "ko": "네오코메테스"
+ },
+ "Cyphastrea": {
+  "ko": "키파스트레아"
+ },
+ "Coreoperca": {
+  "ko": "꺽지 무리",
+  "note": "오늘날 한국 하천에 사는 꺽지와 같은 속이에요."
+ },
+ "Cyprinus": {
+  "ko": "잉어 무리",
+  "note": "오늘날의 잉어와 같은 속이에요."
+ },
+ "Clupea": {
+  "ko": "청어 무리",
+  "note": "오늘날의 청어와 같은 속이에요."
+ },
+ "Zaprora": {
+  "ko": "자프로라"
+ },
+ "Diaphus": {
+  "ko": "디아푸스"
+ },
+ "Rana": {
+  "ko": "개구리 무리"
+ },
+ "Trionyx": {
+  "ko": "트리오닉스",
+  "note": "자라와 같은 자라과 거북이에요."
+ },
+ "Chinemys": {
+  "ko": "키네미스",
+  "note": "오늘날의 남생이를 한때 이 속으로 분류했어요."
+ },
+ "Mionatrix": {
+  "ko": "미오나트릭스"
+ },
+ "Alligator": {
+  "ko": "앨리게이터",
+  "note": "오늘날 중국에 사는 양쯔강악어와 같은 속이에요."
+ },
+ "Osteodontornis": {
+  "ko": "오스테오돈토르니스",
+  "note": "부리에 이빨 모양 돌기가 난 커다란 바닷새예요."
+ },
+ "Annakacygna": {
+  "ko": "안나카키그나"
+ },
+ "Dentalium": {
+  "ko": "뿔조개 무리"
+ },
+ "Parietobalaena": {
+  "ko": "파리에토발라에나"
+ },
+ "Eurhinodelphis": {
+  "ko": "에우리노델피스"
+ },
+ "Isanacetus": {
+  "ko": "이사나케투스"
+ },
+ "Carcharhinus": {
+  "ko": "흉상어 무리"
+ },
+ "Carcharodon": {
+  "ko": "백상아리 무리",
+  "note": "오늘날의 백상아리와 같은 속이에요."
+ },
+ "Isurus": {
+  "ko": "청상아리 무리",
+  "note": "오늘날의 청상아리와 같은 속이에요."
+ },
+ "Cosmopolitodus": {
+  "ko": "코스모폴리토두스"
+ },
+ "Calosoma": {
+  "ko": "칼로소마"
+ },
+ "Scarites": {
+  "ko": "스카리테스"
+ },
+ "Bibio": {
+  "ko": "털파리 무리"
+ },
+ "Plecia": {
+  "ko": "플레키아"
+ },
+ "Balanus": {
+  "ko": "따개비 무리"
+ },
+ "Aphrocallistes": {
+  "ko": "아프로칼리스테스"
+ },
+ "Terebratulina": {
+  "ko": "테레브라툴리나"
+ },
+ "Brissopsis": {
+  "ko": "브리솝시스"
+ },
+ "Carcinoplax": {
+  "ko": "카르키노플락스"
+ },
+ "Callianassa": {
+  "ko": "칼리아나사"
+ },
+ "Araneus": {
+  "ko": "왕거미 무리"
+ },
+ "Cervus": {
+  "ko": "사슴 무리",
+  "note": "오늘날의 꽃사슴과 같은 속이에요."
+ },
+ "Mustela": {
+  "ko": "족제비 무리"
+ },
+ "Odobenus": {
+  "ko": "바다코끼리"
+ },
+ "Palaeoloxodon": {
+  "ko": "팔라에오록소돈",
+  "note": "일본의 나우만코끼리가 속한 멸종 코끼리 무리예요."
+ },
+ "Canis": {
+  "ko": "늑대 무리",
+  "note": "오늘날의 늑대와 같은 속이에요."
+ },
+ "Mammuthus": {
+  "ko": "매머드"
+ },
+ "Anadara": {
+  "ko": "피조개 무리"
+ },
+ "Chlamys": {
+  "ko": "가리비 무리"
+ },
+ "Barbatia": {
+  "ko": "바르바티아"
+ },
+ "Anomia": {
+  "ko": "아노미아"
+ },
+ "Balaenoptera": {
+  "ko": "수염고래 무리",
+  "note": "오늘날의 밍크고래·대왕고래와 같은 속이에요."
+ },
+ "Neophocaena": {
+  "ko": "상괭이 무리",
+  "note": "오늘날 서해·남해에 사는 상괭이와 같은 속이에요."
+ },
+ "Heterocyathus": {
+  "ko": "헤테로키아투스"
+ },
+ "Batillaria": {
+  "ko": "갯고둥 무리"
+ },
+ "Astyris": {
+  "ko": "아스티리스"
+ },
+ "Balcis": {
+  "ko": "발키스"
+ },
+ "Cancellaria": {
+  "ko": "칸켈라리아"
+ },
+ "Apodemus": {
+  "ko": "등줄쥐 무리"
+ },
+ "Microtus": {
+  "ko": "밭쥐 무리"
+ },
+ "Myodes": {
+  "ko": "대륙밭쥐 무리"
+ },
+ "Uria": {
+  "ko": "바다오리 무리"
+ },
+ "Ardenna": {
+  "ko": "슴새 무리"
+ },
+ "Phalacrocorax": {
+  "ko": "가마우지 무리"
+ },
+ "Aethia": {
+  "ko": "아에티아"
+ },
+ "Cepphus": {
+  "ko": "흰눈썹바다오리 무리"
+ },
+ "Clangula": {
+  "ko": "바다꿩"
+ },
+ "Buergeria": {
+  "ko": "뷔르게리아"
+ },
+ "Bufo": {
+  "ko": "두꺼비 무리"
+ },
+ "Lamna": {
+  "ko": "악상어 무리"
+ },
+ "Donacia": {
+  "ko": "도나키아"
+ },
+ "Plateumaris": {
+  "ko": "플라테우마리스"
+ },
+ "Onthophagus": {
+  "ko": "온토파구스"
+ },
+ "Charybdis": {
+  "ko": "민꽃게 무리"
+ },
+ "Fistulobalanus": {
+  "ko": "피스툴로발라누스"
+ },
+ "Ammodytes": {
+  "ko": "까나리 무리"
+ },
+ "Engraulis": {
+  "ko": "멸치 무리"
+ },
+ "Gnathophis": {
+  "ko": "그나토피스"
+ },
+ "Sillago": {
+  "ko": "보리멸 무리"
+ },
+ "Valenciennellus": {
+  "ko": "발렌키엔넬루스"
+ }
+}

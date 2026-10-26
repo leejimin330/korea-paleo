@@ -82,3 +82,40 @@ def test_real_taxa_and_sites_are_consistent():
     assert sum(1 for s in sites if s["era_id"] == "cretaceous" and s["marker_type"] == "korea") >= 10
     groups = {m["id"]: m["group"] for m in modern_species(rows)}
     assert groups["pica-serica"] == "bird" and groups["hydropotes-inermis"] == "mammal"
+
+
+def test_quotas_spread_slots_and_respect_cap_and_supply():
+    from build_species import quotas
+
+    counts = {"big": 200, "mid": 20, "small": 2}
+    q = quotas(counts, {n: c ** 0.4 for n, c in counts.items()}, 12, cap=6)
+    assert sum(q.values()) == 12
+    assert q["big"] <= 6 and q["small"] <= 2 and q["mid"] >= 1
+    # 후보가 모자라면 있는 만큼만 고른다.
+    assert sum(quotas({"a": 1, "b": 2}, {"a": 1, "b": 1}, 10).values()) == 3
+
+
+def test_location_name_uses_one_record_for_country_and_state():
+    from build_species import location_name
+
+    assert location_name({"cc": "JP", "state": "Hokkaido "}, "nearby") == "일본 홋카이도"
+    assert location_name({"cc": "CN", "state": "Unknown"}, "nearby") == "중국"
+    assert location_name(None, "korea") == "한반도"
+
+
+def test_built_species_link_to_markers_and_have_names():
+    """빌드 결과 무결성: 시대마다 40종 이상, 모든 항목이 존재하는 마커·노드를 가리킨다."""
+    from common import WEB_DATA
+
+    species = json.loads((WEB_DATA / "species.json").read_text(encoding="utf-8"))
+    fossils = {f["id"]: f for f in json.loads((WEB_DATA / "fossils.json").read_text(encoding="utf-8"))}
+    ids = {r["id"] for r in read_rows(MANUAL / "taxa.csv")}
+    assert len({s["id"] for s in species}) == len(species)
+    for era in ("paleozoic", "late_paleozoic", "cretaceous", "miocene", "ice_age"):
+        assert sum(s["era_id"] == era for s in species) >= 40, era
+    for s in species:
+        assert s["fossil_id"] in fossils, s["id"]
+        assert fossils[s["fossil_id"]]["era_id"] == s["era_id"], s["id"]
+        assert s["tree_node_id"] in ids, s["id"]
+        assert s["name_ko"] and s["name_ko"] != "?", s["id"]
+        assert s["region"] in ("korea", "nearby")

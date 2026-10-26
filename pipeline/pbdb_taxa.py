@@ -15,7 +15,7 @@ GROUP_BY_NODE = [
     ("aves", "bird"), ("dromaeosauridae", "theropod"), ("theropoda", "theropod"), ("sauropoda", "sauropod"),
     ("ornithopoda", "ornithopod"), ("ceratopsia", "ceratopsian"), ("dinosauria", "dinosaur"),
     ("pterosauria", "pterosaur"), ("plesiosauria", "marine_reptile"), ("mosasauridae", "marine_reptile"),
-    ("sauropsida", "reptile"), ("mammalia", "mammal"), ("conodonta", "fish"), ("vertebrata", "fish"),
+    ("sauropsida", "reptile"), ("mammalia", "mammal"), ("amphibia", "amphibian"), ("conodonta", "fish"), ("vertebrata", "fish"),
     ("insecta", "insect"), ("arachnida", "insect"), ("mollusca", "mollusk"), ("animalia", "invertebrate"),
 ]
 

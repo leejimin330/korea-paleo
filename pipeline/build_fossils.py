@@ -7,6 +7,7 @@ from common import ERA_TIMES, MANUAL, PROCESSED, reconstruct_points, write_json
 from build_tree import read_rows
 from fetch_fossils import fetch
 from pbdb_taxa import auto_markers, featured_markers, load_map, load_places
+import build_species
 
 ERA_RANGES = {
     "paleozoic": (500, 443),
@@ -93,6 +94,10 @@ def main():
     sites = sites + feat + auto
     attach_paleo(sites, lambda s: s["location"]["modern"], lambda s, p: s["location"].__setitem__("paleo", p))
     attach_paleo(points, lambda p: p["modern"], lambda p, q: p.__setitem__("paleo", q))
+    # 생물 도감: 한반도 + 주변 지역 속. 자기 마커가 필요한 속(주변 지역 등)은 마커를 더한다.
+    species = build_species.main(fossils=sites)
+    sites = sites + build_species.link_and_reconstruct(species, sites)
+    write_json(PROCESSED / "species.json", species)
     write_json(PROCESSED / "fossils.json", sites)
     write_json(PROCESSED / "pbdb_points.json", points)
     print(f"sites {len(sites)}, pbdb points {len(points)} {dict(Counter(p['era_id'] for p in points))}")
