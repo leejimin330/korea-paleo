@@ -264,6 +264,24 @@ a:hover { color: var(--amber-dark); }
 .chrono-table tr.extinction td { padding: 6px 14px; background: #f7dccd; color: #8a2f10; font-size: 13px; font-weight: 600; }
 .chrono-table tr.extinction span { margin-right: 4px; }
 
+/* ── 과거 지도: 위도 이름표와 시간 슬라이더 ── */
+.lat-labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.lat-labels[hidden] { display: none; }
+.lat-labels span { position: absolute; top: -9px; right: 70px; font-size: 11px; color: var(--muted); background: rgba(247, 231, 204, 0.85); padding: 0 5px; border-radius: 3px; }
+.time-panel { display: flex; flex-direction: column; gap: 4px; padding: 12px 16px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
+.time-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; font-size: 14px; }
+.time-head label strong { font-family: var(--serif); font-size: 18px; color: var(--amber); margin-left: 6px; }
+.time-head > span { color: var(--muted); }
+.time-back { margin-left: auto; min-height: 32px; padding: 0 12px; border-radius: 16px; background: var(--ink); color: var(--paper); border: 0; font-size: 13px; }
+.time-panel input[type="range"] { width: 100%; accent-color: var(--amber); min-height: 28px; }
+.time-ticks { position: relative; height: 18px; margin: 0 8px; }
+.time-ticks span { position: absolute; transform: translateX(-50%); font-size: 11px; color: var(--faint); white-space: nowrap; }
+.time-ticks span::before { content: ""; display: block; width: 1px; height: 5px; margin: 0 auto 1px; background: var(--line-strong); }
+.time-ticks span.on { color: var(--amber); font-weight: 600; }
+.time-ticks span.end { transform: translateX(-100%); text-align: right; }
+.time-ticks span.end::before { margin-right: 0; }
+.time-note { margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+
 /* ── 사진 ── */
 .photo { margin: 0; display: flex; flex-direction: column; gap: 6px; }
 .photo img { width: 100%; height: auto; max-height: 280px; object-fit: cover; border-radius: 6px; background: var(--sand); }
@@ -322,6 +340,9 @@ footer { font-size: 12px; color: var(--faint); border-top: 1px solid var(--line)
   .scale-link { width: 100%; margin-left: 0; }
 }
 @media (max-width: 720px) {
+  .time-ticks span { font-size: 10px; }
+  .time-ticks span:not(.on) { visibility: hidden; }
+  .lat-labels span { right: auto; left: 8px; }
   .path > li { grid-template-columns: 18px minmax(0, 1fr); column-gap: 10px; }
   .path > li::before { left: 8px; }
   .path-time { grid-column: 2; grid-row: 1; text-align: left; }

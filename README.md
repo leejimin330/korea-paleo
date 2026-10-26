@@ -48,7 +48,7 @@ cd pipeline
 
 | 스크립트 | 하는 일 |
 |---|---|
-| `fetch_paleogeo.py` | GPlates Web Service(MERDITH2021)로 시대별 해안선, Natural Earth 한반도 윤곽 복원 |
+| `fetch_paleogeo.py` | GPlates Web Service(MERDITH2021)로 500 Ma~오늘 22개 시점의 해안선·한반도 윤곽·한반도 중심 위치(`paleo_steps.json`, 과거 지도 시간 슬라이더용) 복원 |
 | `fetch_fossils.py` | PBDB `cc=KR` 산출 기록 |
 | `build_fossils.py` | 수작업 화석지(`manual/korea_fossil_sites.json`) + PBDB 집계 + 좌표 복원 |
 | `build_species.py` | 한반도 + 주변 지역 PBDB 속에서 시대별 생물 도감(`species.json`), 주변 지역 마커 추가 |

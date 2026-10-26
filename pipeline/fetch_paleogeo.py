@@ -4,12 +4,18 @@ import json
 from shapely.geometry import mapping, shape
 from shapely.ops import unary_union
 
-from common import ERA_TIMES, GPLATES, MODEL, PROCESSED, cached_get, write_json
+from common import ERA_TIMES, GPLATES, MODEL, PROCESSED, cached_get, reconstruct_points, write_json
 
 NE_URL = (
     "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/"
     "geojson/ne_50m_admin_0_countries.geojson"
 )
+
+
+# 과거 지도 시간 슬라이더의 시점(Ma). 시대 기준 연대(ERA_TIMES)는 모두 들어간다.
+SLIDER_TIMES = sorted({500, 450, 420, 380, 340, 270, 250, 220, 200, 170, 145, 120, 80, 66, 45, 30, 5, *ERA_TIMES.values()}, reverse=True)
+# 한반도 중심(대략 대전 부근). 이 점의 과거 위치로 이동 경로와 "그때 위도"를 보여 준다.
+KOREA_CENTER = (127.5, 36.5)
 
 
 def round_coords(obj, nd=2):
@@ -58,7 +64,8 @@ def main():
     ne = cached_get(NE_URL)
     korea0 = korea_outline(ne)
     write_json(PROCESSED / "outlines" / "korea_0ma.geojson", korea0)
-    for era, t in ERA_TIMES.items():
+    steps = []
+    for t in SLIDER_TIMES:
         coast = cached_get(f"{GPLATES}/reconstruct/coastlines/", {"time": t, "model": MODEL})
         simple = simplify_fc(coast)
         write_json(PROCESSED / "maps" / f"coastlines_{t}ma.geojson", simple)
@@ -68,7 +75,10 @@ def main():
                 {"feature_collection": json.dumps(korea0, separators=(",", ":")), "time": t, "model": MODEL},
             )
             write_json(PROCESSED / "outlines" / f"korea_{t}ma.geojson", rec)
-        print(f"{era}: {t} Ma, coastline features {len(coast['features'])} -> {len(simple['features'])}")
+        (lng, lat), = reconstruct_points([KOREA_CENTER], t)
+        steps.append({"t": t, "korea": [lng, lat]})
+        print(f"{t} Ma: coastline features {len(coast['features'])} -> {len(simple['features'])}, korea center {lng}, {lat}")
+    write_json(PROCESSED / "paleo_steps.json", steps)
 
 
 if __name__ == "__main__":

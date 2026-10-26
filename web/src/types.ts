@@ -100,3 +100,6 @@ export type ImageInfo = {
   artist: string;
   license: string;
 };
+
+/** 과거 지도 시간 슬라이더의 한 시점: 그때 한반도 중심의 [경도, 위도]. */
+export type PaleoStep = { t: number; korea: [number, number] };

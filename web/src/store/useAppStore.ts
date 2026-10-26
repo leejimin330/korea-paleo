@@ -4,7 +4,7 @@ import type { MarkerFilter } from "../lib/markers";
 import { formatRoute, parseHash, type Route } from "../lib/route";
 import { josa } from "../lib/josa";
 import { indexTree, nearestFossilFor, pathToToday, type TreeIndex } from "../lib/tree";
-import type { Era, Fossil, ImageInfo, MapMode, ModernSpecies, Page, PbdbPoint, Species, TreeNode } from "../types";
+import type { Era, Fossil, ImageInfo, PaleoStep, MapMode, ModernSpecies, Page, PbdbPoint, Species, TreeNode } from "../types";
 
 export type AppData = {
   eras: Era[];
@@ -14,6 +14,7 @@ export type AppData = {
   pbdb: PbdbPoint[];
   species: Species[];
   images: Record<string, ImageInfo>;
+  paleoSteps: PaleoStep[];
 };
 
 export type AppState = {
@@ -29,6 +30,8 @@ export type AppState = {
   todayPivot: string | null;
   reverseNote: string | null;
   seaLevel: number;
+  /** 과거 지도 시간 슬라이더(Ma). null이면 지금 시대의 기준 연대. */
+  paleoTime: number | null;
   mapMode: MapMode;
   markerFilter: MarkerFilter;
   showPbdb: boolean;
@@ -46,6 +49,7 @@ export type AppState = {
   reverseSearch: (speciesId: string) => void;
   setMapMode: (m: MapMode) => void;
   setSeaLevel: (v: number) => void;
+  setPaleoTime: (t: number | null) => void;
   setGroups: (groups: string[]) => void;
   setShowReference: (v: boolean) => void;
   setShowPbdb: (v: boolean) => void;
@@ -70,6 +74,7 @@ const eraPatch = (s: AppState, eraId: string) =>
         seaLevel: s.data?.eras.find((e) => e.id === eraId)?.has_sea_level_slider ? GLACIAL_SEA_LEVEL : 0,
         markerFilter: { ...s.markerFilter, groups: [] },
         catalogFilter: { ...s.catalogFilter, group: null },
+        paleoTime: null,
       };
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -85,13 +90,14 @@ export const useAppStore = create<AppState>((set, get) => ({
   todayPivot: null,
   reverseNote: null,
   seaLevel: 0,
+  paleoTime: null,
   mapMode: "paleo",
   markerFilter: { groups: [], showReference: true },
   showPbdb: false,
 
   load: async () => {
     try {
-      const [eras, fossils, tree, modern, pbdb, species, images] = await Promise.all([
+      const [eras, fossils, tree, modern, pbdb, species, images, paleoSteps] = await Promise.all([
         getJson<Era[]>("eras.json"),
         getJson<Fossil[]>("fossils.json"),
         getJson<TreeNode>("tree.json"),
@@ -99,6 +105,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         getJson<PbdbPoint[]>("pbdb_points.json"),
         getJson<Species[]>("species.json"),
         getJson<Record<string, ImageInfo>>("images.json"),
+        getJson<PaleoStep[]>("paleo_steps.json"),
       ]);
       // 주소에 없는 시대 id가 오면 메인으로 돌린다.
       const { page, selectedEraId } = get();
@@ -106,7 +113,12 @@ export const useAppStore = create<AppState>((set, get) => ({
         set({ page: "home", selectedEraId: "cretaceous" });
         history.replaceState(null, "", formatRoute({ page: "home" }));
       }
-      set({ data: { eras, fossils, tree: indexTree(tree), modern, pbdb, species, images } });
+      // 주소로 바로 들어온 시대에 해수면 슬라이더가 있으면 시대를 고를 때처럼 빙기 해수면에서 시작한다.
+      const startEra = eras.find((e) => e.id === get().selectedEraId);
+      set({
+        data: { eras, fossils, tree: indexTree(tree), modern, pbdb, species, images, paleoSteps },
+        seaLevel: startEra?.has_sea_level_slider ? GLACIAL_SEA_LEVEL : 0,
+      });
     } catch (e) {
       set({ loadError: e instanceof Error ? e.message : String(e) });
     }
@@ -209,6 +221,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   setMapMode: (mapMode) => set({ mapMode }),
   setSeaLevel: (seaLevel) => set({ seaLevel }),
+  setPaleoTime: (paleoTime) => set({ paleoTime }),
   setGroups: (groups) => set({ markerFilter: { ...get().markerFilter, groups } }),
   setShowReference: (showReference) => set({ markerFilter: { ...get().markerFilter, showReference } }),
   setShowPbdb: (showPbdb) => set({ showPbdb }),

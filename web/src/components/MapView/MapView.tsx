@@ -3,10 +3,11 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import type { FeatureCollection } from "geojson";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { coordFor, GROUPS, visibleFossils } from "../../lib/markers";
+import { coordFor, formatAgoKo, GROUPS, visibleFossils } from "../../lib/markers";
+import { eraMapTime, graticule, latLabel, mapTime, orderedSteps } from "../../lib/paleo";
 import { gridCorners, renderSeaLevel, type BathyGrid } from "../../lib/sealevel";
 import { useAppStore } from "../../store/useAppStore";
-import type { Era, MapMode } from "../../types";
+import type { MapMode } from "../../types";
 
 // Vite 번들/사전번들 환경에서는 MapLibre가 워커 위치를 스스로 찾지 못하므로 직접 지정한다.
 setWorkerUrl(workerUrl);
@@ -22,11 +23,6 @@ const MODE_LABELS: Record<MapMode, string> = {
   modern: "현재 지도",
   overlay: "현재 지도 + 당시 환경",
 };
-
-/** 지도에 그릴 해안선 연대: 과거 모드만 시대 연대를 쓴다 (빙하기는 판 이동이 무시할 수준이라 0). */
-function coastTime(era: Era, mode: MapMode) {
-  return mode === "paleo" ? (era.age_ma >= 1 ? era.age_ma : 0) : 0;
-}
 
 function hatchImage() {
   const size = 8;
@@ -62,11 +58,20 @@ export function MapView() {
   const [bathy, setBathy] = useState<BathyGrid | null>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const selectFossil = useAppStore((s) => s.selectFossil);
+  const paleoTime = useAppStore((s) => s.paleoTime);
+  const setPaleoTime = useAppStore((s) => s.setPaleoTime);
+  const latLayer = useRef<HTMLDivElement>(null);
 
   const era = data?.eras.find((e) => e.id === eraId);
-  const showSea = !!era?.has_sea_level_slider && mode !== "modern";
+  const t = era ? mapTime(era, mode, paleoTime) : 0;
+  const eraT = era ? eraMapTime(era) : 0;
+  // 화석 좌표는 시대 기준 연대로 복원했으므로, 슬라이더가 다른 시점이면 마커를 숨긴다.
+  const offEra = mode === "paleo" && t !== eraT;
+  const steps = useMemo(() => orderedSteps(data?.paleoSteps ?? []), [data]);
+  const step = steps.find((x) => x.t === t);
+  const showSea = !!era?.has_sea_level_slider && mode !== "modern" && t === 0;
   const sea = useMemo(() => (bathy && showSea ? renderSeaLevel(bathy, seaLevel) : null), [bathy, showSea, seaLevel]);
-  const fossils = useMemo(() => (data ? visibleFossils(data.fossils, eraId, filter) : []), [data, eraId, filter]);
+  const fossils = useMemo(() => (data && !offEra ? visibleFossils(data.fossils, eraId, filter) : []), [data, eraId, filter, offEra]);
 
   // 지도 생성 (한 번)
   useEffect(() => {
@@ -77,11 +82,14 @@ export function MapView() {
       center: [137, 43],
       zoom: 3,
       attributionControl: false,
-      renderWorldCopies: false,
+      renderWorldCopies: true, // 2억 년 전 한반도는 날짜변경선 근처라 지도가 끊기지 않게 반복해서 그린다
     });
     map.on("load", () => {
       map.addImage("hatch", hatchImage());
-      for (const id of ["coast", "korea", "env", "pbdb", "fossils"]) map.addSource(id, { type: "geojson", data: empty });
+      for (const id of ["coast", "korea", "env", "pbdb", "fossils", "track"]) map.addSource(id, { type: "geojson", data: empty });
+      map.addSource("grid", { type: "geojson", data: graticule() });
+      map.addLayer({ id: "grid", type: "line", source: "grid",
+        paint: { "line-color": INK, "line-opacity": ["case", ["get", "equator"], 0.45, 0.16], "line-width": ["case", ["get", "equator"], 1.5, 1], "line-dasharray": [4, 3] } });
       map.addLayer({ id: "coast", type: "fill", source: "coast", paint: { "fill-color": LAND, "fill-outline-color": LAND } });
       map.addLayer({ id: "env-fill", type: "fill", source: "env", filter: ["!=", ["get", "kind"], "disputed"],
         paint: { "fill-color": ["match", ["get", "kind"], "lake", "#7DB7D6", "sea", "#7CC4C0", "land", "#C9A56C", "#ccc"], "fill-opacity": 0.6 } });
@@ -89,6 +97,24 @@ export function MapView() {
       map.addLayer({ id: "env-line", type: "line", source: "env", paint: { "line-color": INK, "line-dasharray": [2, 2], "line-width": 1 } });
       map.addLayer({ id: "korea-fill", type: "fill", source: "korea", paint: { "fill-color": "#FCE18A", "fill-opacity": 0.92 } });
       map.addLayer({ id: "korea-line", type: "line", source: "korea", paint: { "line-color": AMBER, "line-width": 1.6 } });
+      map.addLayer({ id: "track", type: "line", source: "track", filter: ["==", ["geometry-type"], "LineString"],
+        paint: { "line-color": AMBER, "line-width": 1.5, "line-dasharray": [1, 2], "line-opacity": 0.8 } });
+      map.addLayer({ id: "track-pts", type: "circle", source: "track", filter: ["==", ["geometry-type"], "Point"],
+        paint: { "circle-radius": ["case", ["get", "now"], 0, 2.5], "circle-color": AMBER, "circle-opacity": 0.7 } });
+      // 위도 이름표: 지도를 움직일 때마다 왼쪽 가장자리에 다시 놓는다 (심볼 레이어용 글꼴이 없어서 DOM으로 그린다).
+      const placeLat = () => {
+        const box = latLayer.current;
+        if (!box) return;
+        const lng = map.getCenter().lng;
+        for (const el of Array.from(box.children) as HTMLElement[]) {
+          const y = map.project([lng, Number(el.dataset.lat)]).y;
+          el.style.transform = `translateY(${Math.round(y)}px)`;
+          el.style.visibility = y < 40 || y > map.getCanvas().clientHeight - 50 ? "hidden" : "visible";
+        }
+      };
+      map.on("move", placeLat);
+      map.on("resize", placeLat);
+      placeLat();
       map.addLayer({ id: "pbdb", type: "circle", source: "pbdb",
         paint: { "circle-radius": ["interpolate", ["linear"], ["get", "n"], 1, 2.5, 50, 6], "circle-color": "#7F6044", "circle-opacity": 0.55 } });
       map.addLayer({ id: "fossils", type: "circle", source: "fossils",
@@ -167,7 +193,6 @@ export function MapView() {
   useEffect(() => {
     const map = mapRef.current;
     if (!ready || !map || !era) return;
-    const t = coastTime(era, mode);
     const base = `${import.meta.env.BASE_URL}data/`;
     (map.getSource("coast") as GeoJSONSource).setData(`${base}maps/coastlines_${t}ma.geojson`);
     (map.getSource("korea") as GeoJSONSource).setData(`${base}outlines/korea_${t}ma.geojson`);
@@ -176,9 +201,40 @@ export function MapView() {
     map.setFilter("env-fill", ["all", ["==", ["get", "era_id"], era.id], ["!=", ["get", "kind"], "disputed"]]);
     map.setFilter("env-disputed", ["all", ["==", ["get", "era_id"], era.id], ["==", ["get", "kind"], "disputed"]]);
     map.setFilter("env-line", ["==", ["get", "era_id"], era.id]);
+  }, [ready, era, mode, t]);
+
+  // 시대·지도 방식이 바뀌면 그 시대의 기본 위치로 날아간다.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map || !era) return;
     const view = mode === "paleo" ? era.view.paleo : era.view.modern;
     map.flyTo({ center: view.center, zoom: view.zoom, duration: 900 });
   }, [ready, era, mode]);
+
+  // 슬라이더로 시점을 옮기면 한반도를 따라간다 (경도는 지금 보는 쪽에서 가까운 값으로).
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map || paleoTime == null || !step) return;
+    let lng = step.korea[0];
+    const c = map.getCenter().lng;
+    while (lng - c > 180) lng -= 360;
+    while (lng - c < -180) lng += 360;
+    map.easeTo({ center: [lng, step.korea[1]], duration: 600 });
+  }, [ready, paleoTime, step]);
+
+  // 한반도 이동 경로: 과거 지도에서만, 지금 시점까지.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map) return;
+    const upTo = mode === "paleo" ? steps.filter((x) => x.t >= t) : [];
+    (map.getSource("track") as GeoJSONSource).setData({
+      type: "FeatureCollection",
+      features: upTo.length < 2 ? [] : [
+        { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: upTo.map((x) => x.korea) } },
+        ...upTo.map((x) => ({ type: "Feature" as const, properties: { now: x.t === t }, geometry: { type: "Point" as const, coordinates: x.korea } })),
+      ],
+    });
+  }, [ready, mode, steps, t]);
 
   // 해수면: 수심 그리드는 처음 필요할 때 한 번만 받는다.
   useEffect(() => {
@@ -336,42 +392,96 @@ export function MapView() {
         )}
 
         {/* 좁은 화면에서는 필터를 접어 두고 버튼으로 펼친다 (CSS에서 넓은 화면은 항상 펼침). */}
-        <button
-          type="button"
-          className="filters-toggle"
-          aria-expanded={filtersOpen}
-          aria-controls="map-filters"
-          onClick={() => setFiltersOpen(!filtersOpen)}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" /></svg>
-          필터{filter.groups.length > 0 || !filter.showReference || showPbdb ? " · 적용 중" : ""}
-        </button>
-        <div id="map-filters" className={`map-filters${filtersOpen ? " open" : ""}`} role="group" aria-label="마커 필터">
-          {groupsHere.map((g) => (
-            <button key={g} type="button" aria-pressed={groupOn(g)} className={groupOn(g) ? "" : "off"} onClick={() => toggleGroup(g)}>
-              <span className="dot" style={{ background: GROUPS[g]?.color }} aria-hidden="true" />
-              {GROUPS[g]?.label ?? g}
+        {!offEra && (
+          <>
+            <button
+              type="button"
+              className="filters-toggle"
+              aria-expanded={filtersOpen}
+              aria-controls="map-filters"
+              onClick={() => setFiltersOpen(!filtersOpen)}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" /></svg>
+              필터{filter.groups.length > 0 || !filter.showReference || showPbdb ? " · 적용 중" : ""}
             </button>
+            <div id="map-filters" className={`map-filters${filtersOpen ? " open" : ""}`} role="group" aria-label="마커 필터">
+              {groupsHere.map((g) => (
+                <button key={g} type="button" aria-pressed={groupOn(g)} className={groupOn(g) ? "" : "off"} onClick={() => toggleGroup(g)}>
+                  <span className="dot" style={{ background: GROUPS[g]?.color }} aria-hidden="true" />
+                  {GROUPS[g]?.label ?? g}
+                </button>
+              ))}
+              {hasReference && (
+                <button type="button" aria-pressed={filter.showReference} className={filter.showReference ? "" : "off"} onClick={() => setShowReference(!filter.showReference)}>
+                  <span className="dot ref" aria-hidden="true" />
+                  주변 지역 생물
+                </button>
+              )}
+              {pbdbHere > 0 && (
+                <button type="button" aria-pressed={showPbdb} className={showPbdb ? "" : "off"} onClick={() => setShowPbdb(!showPbdb)}>
+                  <span className="dot pbdb" aria-hidden="true" />
+                  PBDB 산출 기록 {pbdbHere}건
+                </button>
+              )}
+            </div>
+          </>
+        )}
+        <div ref={latLayer} className="lat-labels" aria-hidden="true" hidden={mode !== "paleo"}>
+          {[60, 30, 0, -30, -60].map((lat) => (
+            <span key={lat} data-lat={lat}>
+              {lat === 0 ? "적도" : `${lat > 0 ? "북위" : "남위"} ${Math.abs(lat)}°`}
+            </span>
           ))}
-          {hasReference && (
-            <button type="button" aria-pressed={filter.showReference} className={filter.showReference ? "" : "off"} onClick={() => setShowReference(!filter.showReference)}>
-              <span className="dot ref" aria-hidden="true" />
-              주변 지역 생물
-            </button>
-          )}
-          {pbdbHere > 0 && (
-            <button type="button" aria-pressed={showPbdb} className={showPbdb ? "" : "off"} onClick={() => setShowPbdb(!showPbdb)}>
-              <span className="dot pbdb" aria-hidden="true" />
-              PBDB 산출 기록 {pbdbHere}건
-            </button>
-          )}
         </div>
       </div>
+      {mode === "paleo" && steps.length > 1 && (
+        <div className="time-panel">
+          <div className="time-head">
+            <label htmlFor="paleo-time">
+              시간 이동 <strong>{t === 0 ? "오늘" : formatAgoKo(t)}</strong>
+            </label>
+            {step && <span>그때 한반도는 {latLabel(step.korea[1])}</span>}
+            {offEra && (
+              <button type="button" className="time-back" onClick={() => setPaleoTime(null)}>
+                {era?.name} 지도로 돌아가기
+              </button>
+            )}
+          </div>
+          <input
+            id="paleo-time"
+            type="range"
+            min={0}
+            max={steps.length - 1}
+            step={1}
+            value={Math.max(steps.findIndex((x) => x.t === t), 0)}
+            onChange={(e) => {
+              const next = steps[Number(e.target.value)].t;
+              setPaleoTime(next === eraT ? null : next);
+            }}
+            aria-valuetext={t === 0 ? "오늘" : formatAgoKo(t)}
+          />
+          <div className="time-ticks">
+            {data!.eras.map((e) => {
+              const i = steps.findIndex((x) => x.t === eraMapTime(e));
+              return i < 0 ? null : (
+                <span
+                  key={e.id}
+                  className={`${e.id === eraId ? "on" : ""}${i === steps.length - 1 ? " end" : ""}`}
+                  style={{ left: `${(i / (steps.length - 1)) * 100}%` }}
+                >
+                  {e.name.split(" — ")[0]}
+                </span>
+              );
+            })}
+          </div>
+          {offEra && <p className="time-note">화석 마커는 {era?.name} 시점({formatAgoKo(eraT)}) 지도에서만 보여요. 지금은 땅의 움직임만 보여 줘요.</p>}
+        </div>
+      )}
       <figcaption>
         <span>
           {mode === "paleo"
-            ? era && era.age_ma >= 1
-              ? `노란 윤곽 = 오늘의 한반도를 ${era.age_ma} Ma 시점으로 되돌린 위치. 판 구조 모델 기반 추정.`
+            ? t > 0
+              ? `노란 윤곽 = 오늘의 한반도를 ${formatAgoKo(t)} 위치로 되돌린 것. 점선 = 한반도가 지나온 길, 가로 점선 = 위도선. 판 구조 모델 기반 추정.`
               : "진한 황토색 = 해수면이 낮아져 드러난 땅. 오늘의 수심만으로 계산한 단순 추정이에요 (퇴적·지각 변동 미반영). 빗금 = 대한해협 논쟁 구간."
             : mode === "overlay"
               ? showSea
