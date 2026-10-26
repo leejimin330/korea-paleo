@@ -1,8 +1,10 @@
 import { create } from "zustand";
+import type { CatalogFilter } from "../lib/catalog";
 import type { MarkerFilter } from "../lib/markers";
+import { formatRoute, parseHash, type Route } from "../lib/route";
 import { josa } from "../lib/josa";
 import { indexTree, nearestFossilFor, pathToToday, type TreeIndex } from "../lib/tree";
-import type { Era, Fossil, MapMode, ModernSpecies, PbdbPoint, TreeNode } from "../types";
+import type { Era, Fossil, MapMode, ModernSpecies, Page, PbdbPoint, Species, TreeNode } from "../types";
 
 export type AppData = {
   eras: Era[];
@@ -10,12 +12,16 @@ export type AppData = {
   tree: TreeIndex;
   modern: ModernSpecies[];
   pbdb: PbdbPoint[];
+  species: Species[];
 };
 
 export type AppState = {
   data: AppData | null;
   loadError: string | null;
+  page: Page;
   selectedEraId: string;
+  selectedSpeciesId: string | null;
+  catalogFilter: CatalogFilter;
   selectedFossilId: string | null;
   selectedTreeNodeId: string | null;
   highlightedPath: string[];
@@ -27,6 +33,11 @@ export type AppState = {
   showPbdb: boolean;
 
   load: () => Promise<void>;
+  /** 주소(#/era/…)가 바뀌면 화면·시대를 맞춘다. */
+  applyHash: (hash: string) => void;
+  navigate: (r: Route) => void;
+  selectSpecies: (id: string | null) => void;
+  setCatalogFilter: (f: Partial<CatalogFilter>) => void;
   selectEra: (id: string) => void;
   selectFossil: (id: string | null) => void;
   selectTreeNode: (id: string | null) => void;
@@ -45,7 +56,7 @@ async function getJson<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-const clearSelection = { selectedFossilId: null, selectedTreeNodeId: null, highlightedPath: [], todayPivot: null, reverseNote: null };
+const clearSelection = { selectedSpeciesId: null, selectedFossilId: null, selectedTreeNodeId: null, highlightedPath: [], todayPivot: null, reverseNote: null };
 
 /** 시대가 바뀌면 그 시대에 없는 그룹으로 마커가 숨지 않도록 그룹 필터를 초기화한다. */
 // 해수면 슬라이더가 있는 시대(빙하기)는 최종빙기 최성기 수준(-120m)에서 시작한다.
@@ -57,12 +68,16 @@ const eraPatch = (s: AppState, eraId: string) =>
         selectedEraId: eraId,
         seaLevel: s.data?.eras.find((e) => e.id === eraId)?.has_sea_level_slider ? GLACIAL_SEA_LEVEL : 0,
         markerFilter: { ...s.markerFilter, groups: [] },
+        catalogFilter: { ...s.catalogFilter, group: null },
       };
 
 export const useAppStore = create<AppState>((set, get) => ({
   data: null,
   loadError: null,
-  selectedEraId: "cretaceous",
+  page: parseHash(typeof location === "undefined" ? "" : location.hash).page,
+  selectedEraId: parseHash(typeof location === "undefined" ? "" : location.hash).eraId ?? "cretaceous",
+  selectedSpeciesId: null,
+  catalogFilter: { region: "all", group: null },
   selectedFossilId: null,
   selectedTreeNodeId: null,
   highlightedPath: [],
@@ -75,20 +90,54 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   load: async () => {
     try {
-      const [eras, fossils, tree, modern, pbdb] = await Promise.all([
+      const [eras, fossils, tree, modern, pbdb, species] = await Promise.all([
         getJson<Era[]>("eras.json"),
         getJson<Fossil[]>("fossils.json"),
         getJson<TreeNode>("tree.json"),
         getJson<ModernSpecies[]>("modern_species.json"),
         getJson<PbdbPoint[]>("pbdb_points.json"),
+        getJson<Species[]>("species.json"),
       ]);
-      set({ data: { eras, fossils, tree: indexTree(tree), modern, pbdb } });
+      // 주소에 없는 시대 id가 오면 메인으로 돌린다.
+      const { page, selectedEraId } = get();
+      if (page === "era" && !eras.some((e) => e.id === selectedEraId)) {
+        set({ page: "home", selectedEraId: "cretaceous" });
+        history.replaceState(null, "", formatRoute({ page: "home" }));
+      }
+      set({ data: { eras, fossils, tree: indexTree(tree), modern, pbdb, species } });
     } catch (e) {
       set({ loadError: e instanceof Error ? e.message : String(e) });
     }
   },
 
+  applyHash: (hash) => {
+    const r = parseHash(hash);
+    const { data } = get();
+    if (r.page === "era" && r.eraId && data && !data.eras.some((e) => e.id === r.eraId)) {
+      history.replaceState(null, "", formatRoute({ page: "home" }));
+      return set({ page: "home" });
+    }
+    if (r.page === "era" && r.eraId && r.eraId !== get().selectedEraId) set({ ...eraPatch(get(), r.eraId), ...clearSelection });
+    set({ page: r.page });
+  },
+
+  navigate: (r) => {
+    const hash = formatRoute(r);
+    if (location.hash !== hash) location.hash = hash;
+    else get().applyHash(hash);
+  },
+
+  selectSpecies: (id) => {
+    const sp = id ? get().data?.species.find((s) => s.id === id) : undefined;
+    if (!sp) return set(clearSelection);
+    get().selectFossil(sp.fossil_id);
+    set({ selectedSpeciesId: sp.id, selectedTreeNodeId: sp.tree_node_id });
+  },
+
+  setCatalogFilter: (f) => set({ catalogFilter: { ...get().catalogFilter, ...f } }),
+
   selectEra: (id) => {
+    if (get().page === "era") return get().navigate({ page: "era", eraId: id });
     if (id === get().selectedEraId) return;
     set({ ...eraPatch(get(), id), ...clearSelection });
   },
@@ -100,6 +149,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       ...clearSelection,
       selectedFossilId: fossil.id,
       selectedTreeNodeId: fossil.tree_node_id,
+      // 생물 하나짜리 마커(주변 지역 속 등)는 지도에서 눌러도 도감 항목으로 보여 준다.
+      selectedSpeciesId: get().data?.species.find((x) => x.id === fossil.id)?.id ?? null,
       ...eraPatch(get(), fossil.era_id),
     });
   },
@@ -130,9 +181,13 @@ export const useAppStore = create<AppState>((set, get) => ({
     const data = get().data;
     const sp = data?.modern.find((m) => m.id === speciesId);
     if (!data || !sp) return;
-    const hit = nearestFossilFor(data.tree, data.fossils, sp.tree_node_id);
+    // 한반도 화석을 먼저 찾고, 없으면 주변 지역까지 넓힌다.
+    const hit =
+      nearestFossilFor(data.tree, data.fossils.filter((f) => f.marker_type === "korea"), sp.tree_node_id) ??
+      nearestFossilFor(data.tree, data.fossils, sp.tree_node_id);
     if (!hit) {
       set({ ...clearSelection, selectedTreeNodeId: sp.tree_node_id, reverseNote: `${josa(sp.name_ko, "과", "와")} 이어지는 한반도 화석을 아직 찾지 못했어요.` });
+      get().navigate({ page: "era", eraId: get().selectedEraId });
       return;
     }
     const p = pathToToday(data.tree, hit.fossil.tree_node_id);
@@ -146,6 +201,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       todayPivot: p?.pivot ?? null,
       reverseNote: `${josa(sp.name_ko, "과", "와")} ${josa(`「${hit.fossil.name_ko}」`, "은", "는")} ${shared?.name_ko ?? hit.sharedAncestor} 계통을 공유하는 친척이에요.`,
     });
+    // 메인에서 찾았으면 그 화석이 있는 시대 화면으로 간다 (같은 시대라 선택은 유지된다).
+    get().navigate({ page: "era", eraId: hit.fossil.era_id });
   },
 
   setMapMode: (mapMode) => set({ mapMode }),

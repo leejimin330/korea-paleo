@@ -3,11 +3,14 @@ import { formatAgoKo, formatMa } from "../../lib/markers";
 import { xPct } from "../../lib/rails";
 import { useAppStore } from "../../store/useAppStore";
 
-/** 지층 타임라인: 지질시대 띠 위에 바늘, 아래에 시대 정거장. 왼쪽이 과거. */
-export function Timeline() {
+const jump = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+/** 시대 탐험 화면 위쪽: 지질시대 띠 위에 바늘, 아래에 시대 정거장(왼쪽이 과거), 그리고 지금 시대 소개. */
+export function EraNav() {
   const eras = useAppStore((s) => s.data?.eras ?? []);
   const selected = useAppStore((s) => s.selectedEraId);
   const selectEra = useAppStore((s) => s.selectEra);
+  const count = useAppStore((s) => s.data?.species.filter((x) => x.era_id === s.selectedEraId).length ?? 0);
   const sorted = [...eras].sort((a, b) => b.age_ma - a.age_ma);
   const era = sorted.find((e) => e.id === selected);
   const current = era ? periodAt(era.age_ma) : undefined;
@@ -71,6 +74,12 @@ export function Timeline() {
             <p className="era-body">{era.description}.</p>
             <p className="era-fact">{era.highlight}</p>
           </div>
+          <nav className="era-jump" aria-label="이 시대에서 볼 것">
+            {/* 주소의 #은 화면 이동에 쓰므로, 같은 화면 안 이동은 버튼으로 스크롤한다. */}
+            <button type="button" onClick={() => jump("catalog")}>생물 도감 {count}종</button>
+            <button type="button" onClick={() => jump("stage")}>화석 지도</button>
+            <button type="button" onClick={() => jump("rails")}>계통 레일</button>
+          </nav>
         </div>
       )}
     </section>

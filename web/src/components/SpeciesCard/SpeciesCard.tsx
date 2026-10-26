@@ -1,3 +1,4 @@
+import { whereLabel } from "../../lib/catalog";
 import { BADGES, FOSSIL_TYPES, formatMa, GROUPS } from "../../lib/markers";
 import { ancestorsOf, pathToToday } from "../../lib/tree";
 import { useAppStore } from "../../store/useAppStore";
@@ -20,8 +21,7 @@ function EmptyState() {
         </svg>
       </div>
       <h3>표본을 골라 보세요</h3>
-      <p>지도에서 화석 마커를 누르거나, 아래 계통 레일에서 생물 이름을 누르면 여기에 표본 카드가 열려요.</p>
-      <p className="hint">추천: 백악기 → 지도의 「고성 수각류 발자국」 → 오늘로 이어보기</p>
+      <p>위의 생물 도감에서 이름을 누르거나, 지도에서 화석 마커를 누르면 여기에 표본 카드가 열려요.</p>
     </div>
   );
 }
@@ -67,11 +67,15 @@ export function SpeciesCard() {
   const fossilId = useAppStore((s) => s.selectedFossilId);
   const nodeId = useAppStore((s) => s.selectedTreeNodeId);
   const reverseNote = useAppStore((s) => s.reverseNote);
+  const speciesId = useAppStore((s) => s.selectedSpeciesId);
   const connectToToday = useAppStore((s) => s.connectToToday);
   if (!data) return null;
 
   const era = data.eras.find((e) => e.id === eraId);
   const fossil = data.fossils.find((f) => f.id === fossilId);
+  // 도감에서 고른 생물이면 그 생물을 제목으로 쓰고, 마커(화석지)는 "나온 곳"으로 보여 준다.
+  const species = data.species.find((x) => x.id === speciesId && x.fossil_id === fossilId);
+  const hostIsCluster = !!species && !!fossil && species.source === "pbdb" && fossil.id !== species.id;
   const node = nodeId ? data.tree.byId.get(nodeId) : undefined;
   const startNodeId = fossil?.tree_node_id ?? node?.id;
   const startNode = startNodeId ? data.tree.byId.get(startNodeId) : undefined;
@@ -98,8 +102,10 @@ export function SpeciesCard() {
         <div className="specimen-body">
           {reverseNote && <p className="banner">{reverseNote}</p>}
           <div className="specimen-title">
-            <h3>{fossil?.name_ko ?? node?.name_ko}</h3>
-            {(fossil?.scientific_name ?? (fossil ? null : node?.name)) && <p className="sci">{fossil?.scientific_name ?? node?.name}</p>}
+            <h3>{species?.name_ko ?? fossil?.name_ko ?? node?.name_ko}</h3>
+            {(species?.scientific_name ?? fossil?.scientific_name ?? (fossil ? null : node?.name)) && (
+              <p className="sci">{species?.scientific_name ?? fossil?.scientific_name ?? node?.name}</p>
+            )}
             <div className="tags">
               {fossil && (
                 <span className="tag">
@@ -107,6 +113,7 @@ export function SpeciesCard() {
                   {GROUPS[fossil.taxon_group]?.label ?? fossil.taxon_group}
                 </span>
               )}
+              {hostIsCluster && species?.region === "nearby" && <span className="badge badge-east_asia_reference" title={BADGES.east_asia_reference.hint}>{BADGES.east_asia_reference.label}</span>}
               {fossil?.badges.map((b) => (
                 <span key={b} className={`badge badge-${b}`} title={BADGES[b].hint}>
                   {BADGES[b].label}
@@ -124,10 +131,23 @@ export function SpeciesCard() {
             {fossil ? (
               <>
                 <dt>생존 시기</dt>
-                <dd>{fossil.age_range_ma[0]}–{fossil.age_range_ma[1]} Ma (대략)</dd>
-                <dt>화석 종류</dt>
-                <dd>{FOSSIL_TYPES[fossil.fossil_type]}</dd>
-                <dt>발견지</dt>
+                <dd>{(species ?? fossil).age_range_ma[0]}–{(species ?? fossil).age_range_ma[1]} Ma (대략)</dd>
+                {species?.source === "pbdb" && (
+                  <>
+                    <dt>나온 곳</dt>
+                    <dd>
+                      {whereLabel(species)}
+                      {species.n_records != null && <span className="mono-sub">PBDB 산출 기록 {species.n_records}건</span>}
+                    </dd>
+                  </>
+                )}
+                {species?.source !== "pbdb" && (
+                  <>
+                    <dt>화석 종류</dt>
+                    <dd>{FOSSIL_TYPES[fossil.fossil_type]}</dd>
+                  </>
+                )}
+                <dt>{hostIsCluster ? "지도 마커" : species?.source === "pbdb" ? "대표 위치" : "발견지"}</dt>
                 <dd>
                   {fossil.location.name}
                   <span className="mono-sub">
@@ -152,7 +172,13 @@ export function SpeciesCard() {
             )}
           </dl>
 
-          {fossil ? <p className="desc">{fossil.description}</p> : node?.note && <p className="desc">{node.note}</p>}
+          {species ? (
+            <p className="desc">{species.description}</p>
+          ) : fossil ? (
+            <p className="desc">{fossil.description}</p>
+          ) : (
+            node?.note && <p className="desc">{node.note}</p>
+          )}
           {fossil && <TaxaList fossil={fossil} />}
           <p className="source">
             출처 · {fossil ? fossil.sources.join(" · ") : `분기 시점은 문헌 기반 대략값${node?.ott_id ? ` · Open Tree ott${node.ott_id}` : ""}`}

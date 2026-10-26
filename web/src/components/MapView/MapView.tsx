@@ -356,7 +356,7 @@ export function MapView() {
           {hasReference && (
             <button type="button" aria-pressed={filter.showReference} className={filter.showReference ? "" : "off"} onClick={() => setShowReference(!filter.showReference)}>
               <span className="dot ref" aria-hidden="true" />
-              동아시아 참고 화석
+              주변 지역 생물
             </button>
           )}
           {pbdbHere > 0 && (

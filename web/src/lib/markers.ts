@@ -17,15 +17,16 @@ export const GROUPS: Record<string, { label: string; color: string }> = {
   reptile: { label: "기타 파충류", color: "#7A8F3A" },
   insect: { label: "곤충·거미", color: "#2E7D9A" },
   mollusk: { label: "연체동물", color: "#E07FA8" },
+  amphibian: { label: "양서류", color: "#5E9F8A" },
 };
 
 export const BADGES: Record<Badge, { label: string; hint: string }> = {
   not_dinosaur: { label: "공룡 아님", hint: "익룡·수장룡·어룡·모사사우루스는 공룡과 다른 계통이에요." },
   species_unidentified: { label: "종 특정 불가", hint: "발자국·알·조각 화석은 종을 정할 수 없어 그룹 단위로 연결했어요." },
-  east_asia_reference: { label: "동아시아 참고", hint: "한반도 밖(일본·중국)에서 나온 같은 시대 화석이에요." },
+  east_asia_reference: { label: "주변 지역", hint: "한반도 밖(중국·일본·러시아 극동)에서 나온 같은 시대 화석이에요. 한반도에서는 아직 나오지 않았어요." },
   trace_fossil: { label: "흔적 화석", hint: "몸이 아니라 발자국 같은 활동 흔적이에요." },
   disputed: { label: "논쟁 중", hint: "분류 위치에 대해 학계 의견이 갈려요." },
-  auto_pbdb: { label: "자동 수집", hint: "PBDB 산출 기록을 지점·계통별로 자동으로 묶은 마커예요. 설명도 자동 생성돼요." },
+  auto_pbdb: { label: "자동 수집", hint: "PBDB 산출 기록에서 자동으로 만든 항목이에요. 설명도 자동으로 만들어요." },
 };
 
 export const FOSSIL_TYPES: Record<Fossil["fossil_type"], string> = {

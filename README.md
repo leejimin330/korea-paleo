@@ -16,6 +16,12 @@
 | 마이오세 포항 (15 Ma) | 완성 | 상어(메갈로돈 등)·돌고래·민물고기·설치류 (PBDB 자동 + 대표종 2) |
 | 신생대 빙하기 (2만 년 전) | 미리보기 | 현재 지도 + 개략 환경(서해 평원, 대한해협 논쟁 구간), 마커 2. **해수면 슬라이더**(0 ~ −130m, NOAA ETOPO1 수심 기반) |
 
+화면 구성: **메인**(`#/`, 지층 단면에서 시대 고르기 · 오늘의 생물에서 거슬러 오르기) → **시대 탐험**(`#/era/<id>`, 생물 도감 → 지도·표본 카드 → 계통 레일) · **연대표**(`#/timeline`, 선캄브리아~제4기, 한반도·세계 사건과 대멸종).
+
+생물 도감: 시대마다 40~55종. 한반도 기록이 없는 속은 같은 시대 주변 지역(경도 115–145°, 위도 30–50°: 중국 북동부·일본·러시아 극동)
+PBDB 기록에서 골라 「주변 지역」으로 표시한다. 무리별 몫은 (속 수)^0.4 비례, 한 무리 최대 6속, 척추동물 가중.
+한국어 이름은 `pipeline/manual/species_names_ko.json` (이름이 없는 속은 고르지 않음, `python build_species.py --report`로 고를 속 목록 확인).
+
 공통: 지도 3모드(과거 / 현재 / 현재 + 당시 환경), 마커 필터, 계통수 노드 ↔ 지도 연동,
 역방향 탐색(현생종 → 가장 가까운 한반도 화석), 불확실성 배지·점선·빗금, 모든 카드에 출처.
 
@@ -45,6 +51,7 @@ cd pipeline
 | `fetch_paleogeo.py` | GPlates Web Service(MERDITH2021)로 시대별 해안선, Natural Earth 한반도 윤곽 복원 |
 | `fetch_fossils.py` | PBDB `cc=KR` 산출 기록 |
 | `build_fossils.py` | 수작업 화석지(`manual/korea_fossil_sites.json`) + PBDB 집계 + 좌표 복원 |
+| `build_species.py` | 한반도 + 주변 지역 PBDB 속에서 시대별 생물 도감(`species.json`), 주변 지역 마커 추가 |
 | `pbdb_taxa.py` | PBDB 속·종 기록 → 계통수 노드(`manual/pbdb_taxon_map.json`), 시대×계통×시군(`manual/places.csv`) 단위 자동 마커, 대표종(`manual/featured_taxa.json`) 마커 |
 | `build_bathymetry.py` | NOAA ERDDAP ETOPO1에서 117–135°E, 30–43°N을 0.05° 격자로 잘라 `bathymetry.json` (해수면 슬라이더) |
 | `build_tree.py` | `manual/taxa.csv` → `tree.json`, Open Tree TNRS로 `ott_id` 매칭 |

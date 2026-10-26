@@ -67,3 +67,25 @@ export type PbdbPoint = {
 };
 
 export type MapMode = "paleo" | "modern" | "overlay";
+
+/** 생물 도감 항목: 수작업 화석지·대표종, 또는 PBDB 속(한반도·주변 지역). fossil_id는 지도 마커. */
+export type Species = {
+  id: string;
+  era_id: string;
+  name_ko: string;
+  scientific_name: string | null;
+  rank: string | null;
+  pbdb_no: string | null;
+  tree_node_id: string;
+  taxon_group: string;
+  region: "korea" | "nearby";
+  countries: string[];
+  n_records: number | null;
+  age_range_ma: [number, number];
+  location: { name: string; modern: LngLat };
+  description: string;
+  source: "manual" | "pbdb";
+  fossil_id: string;
+};
+
+export type Page = "home" | "era" | "timeline";
