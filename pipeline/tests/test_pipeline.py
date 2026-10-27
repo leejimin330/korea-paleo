@@ -142,3 +142,12 @@ def test_classify_continent_groups():
     # 판 번호를 모르면 대륙으로: 러시아 극동은 아시아로 본다.
     assert classify(454, "Europe", "RUS", 135) == "other_asia"
     assert classify(99999, "Europe", "FRA", 2) == "europe"
+
+
+def test_not_a_photo_filter():
+    from fetch_images import NOT_A_PHOTO
+
+    assert NOT_A_PHOTO.search("Carnivora_Distribution.png")
+    assert NOT_A_PHOTO.search("Bufo_range_map.svg")
+    assert not NOT_A_PHOTO.search("Mammoth_Cave_Cladodus_tooth.jpg")
+    assert not NOT_A_PHOTO.search("Plateumaris_species.jpg")

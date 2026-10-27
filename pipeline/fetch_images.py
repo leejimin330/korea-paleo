@@ -17,6 +17,8 @@ HEADERS = {"User-Agent": USER_AGENT}
 THUMB = 480
 BATCH = 40
 LICENSE_OK = re.compile(r"^(CC BY(-SA)? [0-9.]+|CC0|Public domain|PD.*)", re.I)
+# 생물 사진이 아닌 파일(분포 지도·위치도 등)은 파일 이름으로 거른다.
+NOT_A_PHOTO = re.compile(r"(distribution|range[_ ]?map|_map[._]|locator|location[_ ]map)", re.I)
 
 
 def strip_html(s):
@@ -93,6 +95,7 @@ def main():
     genera, nodes = names_to_fetch(species, tree_rows)
     # 속은 "(genus)" 문서가 있으면 그쪽을 쓴다.
     pages = page_images(genera + [f"{g} (genus)" for g in genera] + nodes)
+    excluded = json.loads((MANUAL / "image_exclusions.json").read_text(encoding="utf-8"))
     chosen = {}
     for g in genera:
         hit = pages.get(f"{g} (genus)") or pages.get(g)
@@ -104,6 +107,8 @@ def main():
     files = commons_info([f for _, f in chosen.values()])
     images = {}
     for name, (page, f) in sorted(chosen.items()):
+        if name in excluded or NOT_A_PHOTO.search(f):
+            continue
         if f in files:
             images[name] = {**files[f], "page": page}
     write_json(PROCESSED / "images.json", images)
