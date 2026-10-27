@@ -101,5 +101,5 @@ export type ImageInfo = {
   license: string;
 };
 
-/** 과거 지도 시간 슬라이더의 한 시점: 그때 한반도 중심의 [경도, 위도]. */
-export type PaleoStep = { t: number; korea: [number, number] };
+/** 과거 지도 시간 슬라이더의 한 시점: 그때 한반도 중심의 [경도, 위도]와 대륙 이름표 위치 [무리, 경도, 위도]. */
+export type PaleoStep = { t: number; korea: [number, number]; labels: [string, number, number][] };

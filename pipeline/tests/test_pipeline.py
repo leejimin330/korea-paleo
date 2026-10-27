@@ -129,3 +129,16 @@ def test_image_license_filter_and_html_strip():
     for bad in ("Fair use", "All rights reserved", ""):
         assert not LICENSE_OK.match(bad), bad
     assert strip_html('<a href="x">Kim  &amp; Lee</a>') == "Kim & Lee"
+
+
+def test_classify_continent_groups():
+    from fetch_paleogeo import classify
+
+    assert classify(601, "Asia", "KOR") == "north_china"
+    assert classify(6023, "Asia", "CHN") == "south_china"
+    assert classify(629, "Asia", "JPN") == "japan"
+    assert classify(101, "North America", "USA") == "north_america"
+    assert classify(503, "Asia", "SAU") == "africa"
+    # 판 번호를 모르면 대륙으로: 러시아 극동은 아시아로 본다.
+    assert classify(454, "Europe", "RUS", 135) == "other_asia"
+    assert classify(99999, "Europe", "FRA", 2) == "europe"

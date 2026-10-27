@@ -268,11 +268,15 @@ a:hover { color: var(--amber-dark); }
 .lat-labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
 .lat-labels[hidden] { display: none; }
 .lat-labels span { position: absolute; top: -9px; right: 70px; font-size: 11px; color: var(--muted); background: rgba(247, 231, 204, 0.85); padding: 0 5px; border-radius: 3px; }
+.continent-label { pointer-events: none; padding: 1px 7px; border-radius: 3px; background: rgba(255, 246, 230, 0.82); color: var(--ink); font-size: 11px; font-weight: 600; white-space: nowrap; }
+.continent-label.home { background: var(--ink); color: var(--paper); }
 .time-panel { display: flex; flex-direction: column; gap: 4px; padding: 12px 16px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
 .time-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; font-size: 14px; }
 .time-head label strong { font-family: var(--serif); font-size: 18px; color: var(--amber); margin-left: 6px; }
 .time-head > span { color: var(--muted); }
-.time-back { margin-left: auto; min-height: 32px; padding: 0 12px; border-radius: 16px; background: var(--ink); color: var(--paper); border: 0; font-size: 13px; }
+.time-world { margin-left: auto; min-height: 32px; padding: 0 12px; border-radius: 16px; background: transparent; border: 1px solid var(--line-strong); font-size: 13px; }
+.time-world:hover { border-color: var(--amber); color: var(--amber); }
+.time-back { min-height: 32px; padding: 0 12px; border-radius: 16px; background: var(--ink); color: var(--paper); border: 0; font-size: 13px; }
 .time-panel input[type="range"] { width: 100%; accent-color: var(--amber); min-height: 28px; }
 .time-ticks { position: relative; height: 18px; margin: 0 8px; }
 .time-ticks span { position: absolute; transform: translateX(-50%); font-size: 11px; color: var(--faint); white-space: nowrap; }

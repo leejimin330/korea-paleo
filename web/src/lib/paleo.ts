@@ -32,7 +32,7 @@ export function unwrapLngs(lngs: number[]): number[] {
 export function orderedSteps(steps: PaleoStep[]): PaleoStep[] {
   const sorted = [...steps].sort((a, b) => b.t - a.t);
   const lngs = unwrapLngs(sorted.map((s) => s.korea[0]));
-  return sorted.map((s, i) => ({ t: s.t, korea: [lngs[i], s.korea[1]] }));
+  return sorted.map((s, i) => ({ ...s, korea: [lngs[i], s.korea[1]] }));
 }
 
 /** "남위 약 10°" / "북위 약 36°" / "적도 부근". */
@@ -53,4 +53,30 @@ export function graticule() {
       geometry: { type: "LineString" as const, coordinates: Array.from({ length: 109 }, (_, i) => [-540 + i * 10, lat]) },
     })),
   };
+}
+
+/** 대륙(지괴) 무리: 지도 색과 이름. 판 번호와 오늘날 대륙으로 나눴다 (파이프라인 fetch_paleogeo.classify). */
+export const CONTINENTS: Record<string, { label: string; color: string }> = {
+  north_china: { label: "북중국 지괴 (한반도 포함)", color: "#D9A066" },
+  south_china: { label: "남중국 지괴", color: "#C7B26E" },
+  siberia: { label: "시베리아", color: "#A7B98A" },
+  other_asia: { label: "그 밖의 아시아 지괴", color: "#B4AC9F" },
+  japan: { label: "일본 열도", color: "#B8917A" },
+  europe: { label: "발티카·유럽", color: "#B6A2C8" },
+  north_america: { label: "로렌시아 (북아메리카)", color: "#8FB3C4" },
+  south_america: { label: "남아메리카", color: "#CB907C" },
+  africa: { label: "아프리카", color: "#D8B784" },
+  india: { label: "인도", color: "#E2A5A2" },
+  australia: { label: "오스트레일리아", color: "#9DC3A7" },
+  antarctica: { label: "남극", color: "#C3CCD6" },
+};
+
+/** 그 무렵 대륙 배치 한 줄 설명 (대략적인 연대). */
+export function supercontinentNote(t: number): string {
+  if (t === 0) return "오늘의 대륙 배치예요.";
+  if (t >= 340) return "남반구에 곤드와나 초대륙(아프리카·남아메리카·인도·오스트레일리아·남극)이 있었어요.";
+  if (t > 200) return "대륙 대부분이 판게아 초대륙으로 모여 있었어요.";
+  if (t > 145) return "판게아가 북쪽 로라시아와 남쪽 곤드와나로 갈라지기 시작했어요.";
+  if (t > 66) return "대서양이 열리고 곤드와나가 조각나는 중이에요.";
+  return "오늘과 비슷한 대륙 배치에 가까워지는 중이에요.";
 }

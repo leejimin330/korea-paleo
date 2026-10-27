@@ -4,7 +4,7 @@ import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import type { FeatureCollection } from "geojson";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { coordFor, formatAgoKo, GROUPS, visibleFossils } from "../../lib/markers";
-import { eraMapTime, graticule, latLabel, mapTime, orderedSteps } from "../../lib/paleo";
+import { CONTINENTS, eraMapTime, graticule, latLabel, mapTime, orderedSteps, supercontinentNote } from "../../lib/paleo";
 import { gridCorners, renderSeaLevel, type BathyGrid } from "../../lib/sealevel";
 import { useAppStore } from "../../store/useAppStore";
 import type { MapMode } from "../../types";
@@ -53,6 +53,7 @@ export function MapView() {
   const setShowReference = useAppStore((s) => s.setShowReference);
   const setShowPbdb = useAppStore((s) => s.setShowPbdb);
   const calloutRef = useRef<Marker | null>(null);
+  const labelRefs = useRef<Marker[]>([]);
   const seaLevel = useAppStore((s) => s.seaLevel);
   const setSeaLevel = useAppStore((s) => s.setSeaLevel);
   const [bathy, setBathy] = useState<BathyGrid | null>(null);
@@ -90,7 +91,9 @@ export function MapView() {
       map.addSource("grid", { type: "geojson", data: graticule() });
       map.addLayer({ id: "grid", type: "line", source: "grid",
         paint: { "line-color": INK, "line-opacity": ["case", ["get", "equator"], 0.45, 0.16], "line-width": ["case", ["get", "equator"], 1.5, 1], "line-dasharray": [4, 3] } });
-      map.addLayer({ id: "coast", type: "fill", source: "coast", paint: { "fill-color": LAND, "fill-outline-color": LAND } });
+      // 대륙(지괴)마다 색을 달리한다. 무리가 없는 조각은 기본 황토색.
+      const continentColor = ["match", ["get", "g"], ...Object.entries(CONTINENTS).flatMap(([k, v]) => [k, v.color]), LAND] as unknown as string;
+      map.addLayer({ id: "coast", type: "fill", source: "coast", paint: { "fill-color": continentColor, "fill-outline-color": continentColor } });
       map.addLayer({ id: "env-fill", type: "fill", source: "env", filter: ["!=", ["get", "kind"], "disputed"],
         paint: { "fill-color": ["match", ["get", "kind"], "lake", "#7DB7D6", "sea", "#7CC4C0", "land", "#C9A56C", "#ccc"], "fill-opacity": 0.6 } });
       map.addLayer({ id: "env-disputed", type: "fill", source: "env", filter: ["==", ["get", "kind"], "disputed"], paint: { "fill-pattern": "hatch" } });
@@ -221,6 +224,20 @@ export function MapView() {
     while (lng - c < -180) lng += 360;
     map.easeTo({ center: [lng, step.korea[1]], duration: 600 });
   }, [ready, paleoTime, step]);
+
+  // 대륙 이름표: 과거 지도에서만. 위치는 시점마다 파이프라인이 고른 가장 큰 조각의 안쪽 점.
+  useEffect(() => {
+    const map = mapRef.current;
+    for (const m of labelRefs.current) m.remove();
+    labelRefs.current = [];
+    if (!ready || !map || mode !== "paleo" || !step) return;
+    labelRefs.current = step.labels.map(([g, lng, lat]) => {
+      const el = document.createElement("div");
+      el.className = `continent-label${g === "north_china" ? " home" : ""}`;
+      el.textContent = CONTINENTS[g]?.label ?? g;
+      return new Marker({ element: el }).setLngLat([lng, lat]).addTo(map);
+    });
+  }, [ready, mode, step]);
 
   // 한반도 이동 경로: 과거 지도에서만, 지금 시점까지.
   useEffect(() => {
@@ -440,7 +457,14 @@ export function MapView() {
             <label htmlFor="paleo-time">
               시간 이동 <strong>{t === 0 ? "오늘" : formatAgoKo(t)}</strong>
             </label>
-            {step && <span>그때 한반도는 {latLabel(step.korea[1])}</span>}
+            {step && <span>그때 한반도는 {latLabel(step.korea[1])}. {supercontinentNote(t)}</span>}
+            <button
+              type="button"
+              className="time-world"
+              onClick={() => step && mapRef.current?.easeTo({ center: mapRef.current.getCenter(), zoom: 1.3, duration: 700 })}
+            >
+              세계 전체 보기
+            </button>
             {offEra && (
               <button type="button" className="time-back" onClick={() => setPaleoTime(null)}>
                 {era?.name} 지도로 돌아가기
